@@ -1,0 +1,58 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class effectForDouqi : effectBasic {
+ 
+	void Start () 
+	{
+
+		Init ();//进行初始化
+	}
+
+	public override void Init ()
+	{
+		theEffectName = "赛亚人血统";
+		theEffectInformation ="每一次攻击命中恢复2斗气,\n但自动回复斗气效率减少60%，\n每损失1%生命，攻击力提升0.6%";
+		makeStart ();
+		//Debug .Log(this.thePlayer .name +"的额外效果："+ this.getInformation());
+		//thePlayer.ActerSpUp = 0;
+	}
+
+	public override bool isBE ()
+	{
+		return true;//这个是被动技能
+	}
+
+	public override void OnAttack (PlayerBasic aim)
+	{
+		thePlayer.ActerSp += 2f;
+	}
+
+
+	public override void OnSpTowardSpMax ()
+	{
+		thePlayer.ActerHp += 100f;
+	}
+
+	//这个方法会由挂上的人物的PlayerBasi统一调用，调用时间间隔为1秒
+	public override void effectOnUpdate ()//每一个固定的时钟调用
+	{
+		thePlayer.ActerWuliDamage = thePlayer.CActerWuliDamage * (1 + (thePlayer.ActerHpMax - thePlayer.ActerHp) *0.6f/ thePlayer.ActerHpMax);
+		 
+	}
+
+	public override void OnSpUp ()
+	{
+		thePlayer .ActerSp -= thePlayer .ActerSpUp*0.6f*systemValues .updateTimeWait;
+	}
+
+ 
+
+	void OnDestroy()
+	{
+		effectDestory ();
+	}
+
+ 
+}

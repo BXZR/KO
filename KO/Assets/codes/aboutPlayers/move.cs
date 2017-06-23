@@ -1,0 +1,319 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class move : MonoBehaviour {
+
+	//极简主义的移动代码
+	//通过向AnimatorController传入当前的两个轴的值来操纵动画的合成和播放
+	[HideInInspector]//为了保证设定面板的简洁，暂时隐藏之
+	public string forwardAxisName = "forward1";//向前移动的轴名称
+	[HideInInspector]//为了保证设定面板的简洁，暂时隐藏之
+	public string upAxisName = "up1";//向上移动的轴名称
+
+	private float speedNow =0.6f;//一般来说都是先移动的
+	public float speedNormal =0.6f;//一般移动的移动速度
+	public float speedRun =1.25f;//狂奔的移动速度
+	private float keyNow = 0f;//长按达到一秒钟才可以切换 这个是当前的计时器
+	private float keyTimer = 1.5f;//长按达到一定时间才可以切换 
+	public float jumpMaxHeight =1.5f;//跳跃最高高度
+	float lookHeight = 10;	//在高空中是立即转身的，只有在一定高度范围内才会使用插值转身
+	private Vector3 moveDirection;//记录的临时变量减少引用数量
+	private CharacterController theController;//角色控制器
+	private  Animator theAnimatorOfPlayer;//动画控制器
+	private  PlayerBasic thePlayer;//人物属性控制器
+	private float margin =0.1f;//距离地面距离，小于这个距离被认为是在地面上
+	private float overGroundTimer = 0f;//离开地面的时间,离开地面时间越长，迫使下降的数量就会越大
+	//所以，即便是一直按住向上的键位，也会因为时间的因素下降
+	//////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	//这是一些计算用的值，保留其引用不知道能不能起到一点点的优化作用
+	float forwardA = 0;//记录输入轴横轴的值，减少Input的获取
+	float upA = 0;//记录输入轴的纵轴的值减少Input的获取
+	//float leftA = 0;//记录输入轴的纵轴的值减少Input的获取
+	public bool canMove = false;//此单位可以被移动
+	public bool canLook = true;//此单位额可以看向目标
+	public bool canGravity = true;//存在重力（大多数情况下是需要考虑重力的）
+	[HideInInspector]//为了保证设定面板的简洁，暂时隐藏之
+	public bool isStarted =false;//是否开启
+	private GameObject theEneMy ;//目标（移动之后始终要看向目标的）
+
+	//这是一个补救的方法
+	//因为此游戏是2D横版格斗游戏，所以尽可能要保证X坐标轴的值要想等
+	//当然，也可以使用摄像机的方法使得造成的偏移无效果
+	private   float startPositionX;//起始坐标
+
+
+	void Start () 
+	{
+		//makeStart ();
+	}
+
+
+	public void makeStart()//初始化方法，由总控单元统一进行初始化
+	{
+		//获取组件并且保留引用
+		//允许这些组件是再组物体上面，这是因为这里面的资源是拼凑得到的，并不规整，在这里不得不使用一些折衷
+		theController = this.GetComponentInChildren<CharacterController> ();
+		theAnimatorOfPlayer= this.GetComponentInChildren<Animator> ();
+		thePlayer = this.GetComponentInChildren<PlayerBasic> ();//其实就是实时获取人物的移动速度
+		if(!theEneMy)
+			theEneMy = systemValues.getEMY (this.thePlayer.transform);
+		makeAxis ();
+		lookAtEmyImmediate ();
+		isStarted = true;
+		lookHeight = jumpMaxHeight /2;
+		startPositionX = this.transform.position.x;
+	}
+
+	public void makeAxis()
+	{
+		PlayerBasic thePlayer = this.GetComponent<PlayerBasic> ();
+		if (thePlayer.playerIndex == 0)
+		{
+			forwardAxisName = systemValues.forwardAxisName1;
+			upAxisName = systemValues.upAxisName1;
+		} 
+		else if (thePlayer.playerIndex == 1) 
+		{
+			forwardAxisName = systemValues.forwardAxisName2;
+			upAxisName = systemValues.upAxisName2;
+		}
+	}
+	//这个用射线的方法其实不是很好用，有时候会返回一个不太对的值
+	//其原因是本游戏中所有的任务的默认坐标都是贴地的
+	bool IsGrounded()
+	{    
+		return Physics.Raycast(transform.position, -this.transform .up,  margin);    
+	}  
+
+
+	public void moveSimple(float  forwardA ,float upA)//提供非常简单的位移（此方法仅仅用于一些特殊的位移效果）
+	{
+		moveDirection = Vector3.zero;//刷新值这个值只需要计算位置增量就可以了
+		moveDirection.z += forwardA * Time.deltaTime;//向着正方向移动会有来自方向的速度加成同样在后退的时候速度会相对较低
+		moveDirection.y += upA * Time.deltaTime;//向着正方向移动会有来自方向的速度加成同样在后退的时候速度会相对较低
+		Vector3 moveDirectionAction = transform.rotation * moveDirection;//旋转角度加权
+		if (theController && theController.enabled)//有时候需要强制无法移动
+			theController.Move (moveDirectionAction);//真实地进行行动(因为使用的是characterController，因此使用坐标的方式似乎比较稳妥)
+	}
+
+	public void moveAction(float  forwardA ,float upA)
+	{
+		moveDirection = Vector3.zero;//刷新值这个值只需要计算位置增量就可以了
+		float ZMove = 0f;
+		Vector3 moveDirectionAction = Vector3.zero;
+
+		if (thePlayer &&　canMove) 
+		{
+			//print ("=="+this.name +"---"+forwardA +"---"+upA);
+			forwardA *= thePlayer.ActerMoveSpeedPercent;
+			upA *= thePlayer.ActerMoveSpeedPercent;
+			//在游戏中有一些朝向的问题，所以在朝向不同的时候不同的按键会有不同的效果
+			//例如，在游戏人物面向右侧的时候，按下D键位是向前移动
+			//而当游戏人物面向左侧的时候，按下D就是向后移动
+			//这里需要取出朝向判断Z的方向
+			if (this.transform.forward.z < 0)
+				forwardA = -forwardA;
+
+			/**************************这是一个横版格斗游戏的苗头，但是对于一个单纯的格斗游戏来讲没有必要******************************/
+			//leftA = Input.GetAxis ("lefts");//获取纵轴的值
+			//在这里只是流出来这个设定，如果以后还有机会，就从这里开始扩展
+			/************************************************************************************************************************/
+
+			this.theAnimatorOfPlayer.SetFloat ("forward", forwardA);//播放动画,具体内容需要看controller
+			this.theAnimatorOfPlayer.SetFloat ("up", upA);//播放动画传值,具体内容需要看controller
+
+			if ( systemValues . canMoveState(theAnimatorOfPlayer)) 
+			{
+				ZMove = (speedNow + forwardA / 5) * forwardA * Time.deltaTime;
+				if (upA > 0.1f && upA < 0.5f)
+					upA = Mathf.Max (upA, 0.5f);//
+				moveDirection.z += ZMove;//向着正方向移动会有来自方向的速度加成同样在后退的时候速度会相对较低
+				float YAdd = speedRun * 2.5f * upA * Time.deltaTime;//高速度的跳跃
+				//下面注释的两行是一个很好的思想，但是因为y周上面的移动出现跳变，会有较大幅度的上下抖动
+				moveDirection.y += YAdd;//漫游之移动
+				//moveDirection.x += speedRun * 2 * leftA * Time.deltaTime;//左右（在游戏中就是纵向移动）
+			}
+			/******************************************速度修改**************************************************************/
+			//if (Mathf.Abs(Input.GetAxis (forwardAxisName) )>0.1f ||  Mathf.Abs( Input.GetAxis (upAxisName) )> 0.1f || Input.GetAxis ("lefts") != 0) {//如果有输入就逐步进行检测，长按与短按的时间并不一样
+			if (Mathf.Abs (Input.GetAxis (forwardAxisName)) > 0.1f || Mathf.Abs (Input.GetAxis (upAxisName)) > 0.1f) {//如果有输入就逐步进行检测，长按与短按的时间并不一样
+				keyNow += Time.deltaTime;//使用这个计时器进行计时
+
+				if (theController.isGrounded == false || this.transform.position.y > 0.6f) 
+				{
+					keyNow += Time.deltaTime*2;//半空中速度积累速度更快
+				}
+
+				if (keyNow > keyTimer)//切换速度
+				speedNow = speedRun;
+				else
+				speedNow = speedNormal;
+			} else 
+			{
+				keyNow = 0;//归零
+			}
+
+		}
+
+		moveDirectionAction = transform.rotation * moveDirection;//旋转角度加权
+		/******************************************限制移动和强制移动**************************************************************/
+		//print("moveDirectionAction.y = "+moveDirectionAction.y);
+		float disP = Mathf.Abs (systemValues.nowDistance (this.transform) - (moveDirectionAction.z + this.transform.position.z));
+		//计算计算的后半部分是一个估计值
+		//返还两个角色之间的距离如果距离差在一定程度就需要做强制处理
+		if (disP > 10) 
+		{ //距离过长就不允许继续移动了
+			moveDirectionAction.z = 0;
+			//print (Mathf.Abs (EMY.transform.position.z - this.transform.position.z));
+		} 
+		else if (disP < 0.3f && this.transform.position.y >= 0.5f)
+		{
+			//当越过头顶的时候需要加一下速度，因可能防止站在对手头顶上面
+			moveDirectionAction.z = this.transform.forward.z * 0.17f;//进行强制高度移动
+		}
+
+		/*************************************重力控制**************************************************/
+		//有关重力的计算不论是否可以移动都应该进行
+		//IsGrounded () == false || 
+		if (theController　&& canGravity)
+		{
+			if (theController.isGrounded == false || this.transform.position.y > 0.6f) 
+			{
+				overGroundTimer += Time.deltaTime;//不在地上就进行计时，获得随着离地时间线性增长的向下移动的趋势
+			    moveDirectionAction.y -= (1.2f + overGroundTimer * 1.2f) * Time.deltaTime;//自编写的伪重力公式随着在半空中的时间的长短获得一个不断增加的向下移动的趋势
+			    //这里不适合恒力作为重力模拟
+				if (this.transform.position.y > jumpMaxHeight / 3)//在一定高度的半空中有一定的移动速度加成
+				moveDirectionAction.z += ZMove * 0.25f;//在半空中有额外25%的横向移动速度;
+			} 
+			else 
+			{
+				overGroundTimer = 0f;//归零
+			}
+		}
+
+		/*************************************移动与高度限制**************************************************/
+
+		if (theController && theController.enabled)//有时候需要强制无法移动
+			theController.Move (moveDirectionAction);//真实地进行行动(因为使用的是characterController，因此使用坐标的方式似乎比较稳妥)
+		if (this.transform.position.y >= jumpMaxHeight)//高度达到一定限制之后不再允许继续向上移动
+			this.transform.position = new Vector3 (this.transform.position.x, jumpMaxHeight, this.transform.position.z);
+
+
+
+	}
+
+	//外部调用看向目标的方式
+	public void lookAtEMY(bool immediately= true)
+	{
+		if (lookAtValueGate ())
+		{
+			if (immediately)
+			{
+				lookAtEmyImmediate ();//直接lookAt
+			} 
+			else 
+			{
+			    lookAtEmy ();//插值法，效果好但是有延迟，所以有角度偏离的风险
+			}
+		}
+	}
+ 
+
+	private bool lookAtValueGate()//统一的看向目标的条件，AI和人都需要遵从这个条件
+	{
+		if (thePlayer && canLook && Mathf.Abs (this.transform.position.y - theEneMy.transform.position.y) < 1.25f)
+			return true;
+		return false;
+	}
+
+
+   public	void lookAtEmyImmediate()//立即看向目标
+	{
+		//这是旧版的转身看向目标的方法
+
+		if(!theEneMy)
+			theEneMy = systemValues.getEMY (this.transform);
+		this.transform.LookAt (new Vector3 (theEneMy.transform.position.x, this.transform.position.y, theEneMy.transform.position.z));//&& this.transform.position.y < 0.9f
+	}
+
+	private	void lookAtEmy()//插值法更新旋转最终看向某一个物体
+	{
+		if (theEneMy  && thePlayer )
+		{
+			
+			Vector3 pos = theEneMy  .transform .position - thePlayer.transform.position;
+
+			Quaternion t = Quaternion.LookRotation (pos);
+			t.x = 0;
+			t.z = 0;
+			thePlayer.transform.rotation = Quaternion.Slerp (thePlayer.transform.rotation ,t,Time .deltaTime *30);
+			//禁止除了Y轴之外的其他轴的旋转
+			//15是转身速率，太慢会转不过来身体导致偏离坐标位置，太快没效果
+		}
+	}
+
+ 
+
+	public void beMakeBack(float speed)//被强制击退
+	{
+		Vector3 moveDirectionAction = this.transform .forward *-1f *speed *Time .deltaTime ;//旋转角度加权
+		if (theController && theController.enabled)//有时候需要强制无法移动
+		theController.Move (moveDirectionAction);//真实地进行行动(因为使用的是characterController，因此使用坐标的方式似乎比较稳妥)
+	}
+
+	public void beMakeForward(float speed)//效果移动（前进）
+	{
+		Vector3 moveDirectionAction = this.transform .forward *1f *speed *Time .deltaTime ;//旋转角度加权
+		if (theController && theController.enabled)//有时候需要强制无法移动
+			theController.Move (moveDirectionAction);//真实地进行行动(因为使用的是characterController，因此使用坐标的方式似乎比较稳妥)
+	}
+
+	private void fixXPosition()
+	{
+		this.transform.position = new Vector3 (startPositionX,this.transform .position .y,this.transform .position .z);
+
+	}
+
+	private void fixRotation()
+	{
+		if (this.transform.forward.z < 0)
+			this.transform.rotation = new Quaternion (this.transform.rotation.x,-180,this.transform.rotation.z,0);
+		else
+			this.transform.rotation = new Quaternion (this.transform.rotation.x,0,this.transform.rotation.z,0);
+	}
+
+
+	void Update ()
+	{
+		if (isStarted) {
+			forwardA = Input.GetAxis (forwardAxisName);
+			upA = Input.GetAxis (upAxisName);
+			moveAction (forwardA, upA);
+			fixXPosition ();//更新x轴坐标（说实话不是什么好方法）
+
+        	/********************看向目标********************************************************/
+			if (canLook)
+			{
+				//不允许在半空中太高的地方看向目标
+				//但也因此这个游戏在坐标和大小上恐怕需要有比较高的要求。
+				if (this.transform.position.y > lookHeight) {
+					lookAtEMY (true);
+					fixRotation ();
+				} else
+					lookAtEMY (false);
+				//偷袭，约过敌人头顶的时候敌人没反应过来但是自己已经转身
+				if (this.transform.position.y > lookHeight && Mathf.Abs (this.transform.position.z - theEneMy.transform.position.z) > 0.3f || this.GetComponent <AI_stage> ())
+					lookAtEmyImmediate ();
+			
+			}
+			/******************************************************************************************************/
+			//下面是最保险的方法，留着使用
+			//if (thePlayer && thePlayer.canLook && Mathf.Abs (this.transform.position.y - theEneMy.transform.position.y) < 1.25f)//因为有在半空中的情况，事实上检测本人坐标很小不是一个值得推崇的方法
+			//	lookAtEmyImmediate ();
+			/*****************************************************************************************************/
+		}
+
+ 
+	}
+}

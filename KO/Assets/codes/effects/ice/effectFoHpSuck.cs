@@ -5,7 +5,7 @@ using UnityEngine;
 public class effectFoHpSuck : effectBasic {
 	//攻击的吸血效果
 	public int hpSuck =3;//每一次发起攻击吸收的生命值
-	public float hpSuckPercent = 0.07f;//攻击伤害的10%转化为生命
+	public float hpSuckPercent = 0.10f;//攻击伤害的10%转化为生命
 
 	void Start () 
 	{

@@ -35,7 +35,7 @@ public class systemValues : MonoBehaviour {
 
 	//增加新人物的时候增加这里面的项目就可以了
 	//这些数组的内容是纵向对应的并且与Resources文件夹中资源内容相对应
-	public static string[] thePlayerNamesForPlay = {"theFighterAshe","theFighterIce"};
+	public static string[] thePlayerNamesForPlay = { "theFighterAshe"  ,  "theFighterIce"};
 	private static string [] fighterInResourceNames = {"theFighterWukong","theFighterIce","theFighterdemon","theFighterknight","theFighterknife","theFighterAshe"};
 	public static string[] fighterPicInResourceNames = {"wukong","iceMonster","DEMON","knightHead","knifeHead","asheHead"};//获取头像名称用于显示
 	public static string[] fighterCharacterNames = {"孙悟空","冰原魔人","地狱恶魔","恶灵骑士","归海一刀","寒冰射手"};//获取头像名称用于显示
@@ -92,7 +92,7 @@ public class systemValues : MonoBehaviour {
 	//全局状态参数
 	//用枚举的方式而不是int标记是因为代码读者更容易看懂
 	//但说实话，如果只是用int 标记其效率当然会高一点
-	public static GameType theGameType = GameType.PVP ;
+	public static GameType theGameType = GameType.PVC;
 	//public static int theGameMode = 0;
 	//PVP people vs people
 	//pvc people vs computer

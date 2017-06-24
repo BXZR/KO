@@ -25,7 +25,7 @@ public class magicArrow :  effectBasic {
 	public override void Init ()
 	{
 		theEffectName = "魔法水晶箭";
-		theEffectInformation ="发射水晶箭击晕目标"+lastingTime+"秒\n击晕期间再次使用可造成"+damageLater+"后续伤害\n这个技能每"+coolingTime+"秒仅可以使用一次\n冷却中使用将转化为普通射击";
+		theEffectInformation ="发射水晶箭冰冻目标"+lastingTime+"秒\n冰冻期间再次使用可造成"+damageLater+"后续伤害\n这个技能每"+coolingTime+"秒仅可以使用一次\n冷却中使用将转化为普通射击";
 		makeStart ();
 		forward = this.thePlayer.transform.forward;
 		Arrow = (GameObject)  Resources.Load ("effects/aShe_Arrow_Magic");
@@ -34,7 +34,7 @@ public class magicArrow :  effectBasic {
 		theArrow.GetComponent <extraWeapon> ().setPlayer (this.thePlayer);
 
 		Vector3 positionNew = thePlayer.transform.position + new Vector3 (0,0.9f,forward .normalized.z*0.1f) ;
-		theArrow.transform.position = positionNew  ;
+		theArrow.transform.position = positionNew ;
 		theArrow.transform.forward = thePlayer.transform.forward;
 		Destroy (theArrow,arrowLife);
 		Destroy (this.GetComponent(this.GetType()),coolingTime);

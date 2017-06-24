@@ -286,21 +286,24 @@ public class move : MonoBehaviour {
 
 	void Update ()
 	{
-		if (isStarted) {
+		if (isStarted) 
+		{
 			forwardA = Input.GetAxis (forwardAxisName);
 			upA = Input.GetAxis (upAxisName);
 			moveAction (forwardA, upA);
-			fixXPosition ();//更新x轴坐标（说实话不是什么好方法）
+			fixXPosition ();//更新x轴坐标（说实话不是什么好方法）-------------------------这个方法很偶然的时候会失效
 
         	/********************看向目标********************************************************/
 			if (canLook)
 			{
 				//不允许在半空中太高的地方看向目标
 				//但也因此这个游戏在坐标和大小上恐怕需要有比较高的要求。
-				if (this.transform.position.y > lookHeight) {
+				if (this.transform.position.y > lookHeight)
+				{
 					lookAtEMY (true);
 					fixRotation ();
-				} else
+				} 
+				else
 					lookAtEMY (false);
 				//偷袭，约过敌人头顶的时候敌人没反应过来但是自己已经转身
 				if (this.transform.position.y > lookHeight && Mathf.Abs (this.transform.position.z - theEneMy.transform.position.z) > 0.3f || this.GetComponent <AI_stage> ())

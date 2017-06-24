@@ -20,6 +20,20 @@ public class theStartController : MonoBehaviour {
 		makeStart ();
 	}
 
+    //在游戏结束的时候触发
+	public  void OnGameOver()
+	{
+		//如果正在显示制作群信息，那就仅仅停止显示信息
+		if (isBuildInformationShow)
+			theBuildersPanel.SetActive (false);
+		else {//如果没有显示制作群信息这种情况比较苛刻，但是无视刚刚开始移动的过程，因为移动已经加锁
+			taiji ();	
+			isBuildInformationShow = false;
+		}
+			
+		Invoke ("gameOver",lightAndDarkMove.moveTime *2f);//这个等待的时间需要比移动的时间稍微长一点
+	}
+
 	void makeStart()
 	{
 		closeOthers ();
@@ -46,14 +60,6 @@ public class theStartController : MonoBehaviour {
 		theMoviePlane.GetComponent <MV> ().makePlay ();
 	}
 
-
-	void closeOthers()
-	{
-		if (theBuildersPanel.gameObject.active)
-			theBuildersPanel.gameObject.SetActive (false);
-		if (theUIRoot.gameObject.active)
-			theUIRoot.gameObject.SetActive (false);
-	}
 
 	public void startWithoutPlayMovie()
 	{
@@ -82,7 +88,7 @@ public class theStartController : MonoBehaviour {
 		{
 			isBuildInformationShow = true;
 			taiji ();
-			Invoke ("build", 0.4f);//这个时间是阴阳太极图移动的时间和本身延迟时间的和
+			Invoke ("build", lightAndDarkMove.moveTime*1.25f);//这个时间是阴阳太极图移动的时间和本身延迟时间的和
 		} 
 		else 
 		{
@@ -92,9 +98,24 @@ public class theStartController : MonoBehaviour {
 		}
 	}
 
+	//真正游戏结束的方法调用
+	private void gameOver()
+	{
+		Application.Quit ();//直接结束游戏
+	}
+
+	//这是为了节约代码做的内部封装，私有
+	void closeOthers()
+	{
+		if (theBuildersPanel.gameObject.active)
+			theBuildersPanel.gameObject.SetActive (false);
+		if (theUIRoot.gameObject.active)
+			theUIRoot.gameObject.SetActive (false);
+	}
+
 
 	//需要有一个既短暂的延迟时间来等待太极图片闭合或者打开
-	void build()
+	private void build()
 	{
 		if (theBuildersPanel.gameObject.active) 
 		{
@@ -105,9 +126,9 @@ public class theStartController : MonoBehaviour {
 			theBuildersPanel.gameObject.SetActive (true);
 		}
 	}
-
+		
 	//阴阳太极图的移动
-	void taiji()
+	private  void taiji()
 	{
 		lights.moveOperate ();
 		darks.moveOperate ();

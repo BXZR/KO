@@ -46,6 +46,8 @@ public class startSceneButtons : MonoBehaviour  {
 		}
 	}
 
+	//这个方法是立即结束游戏，现在已经废弃，在这里暂留接口口
+	//游戏结束方法已经放到theStartController里面
 	public void over()
 	{
 		systemValues.canAttack = false;//开启这个标记能够使得游戏人物在被观看的时候特可以做出动作

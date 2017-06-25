@@ -14,7 +14,7 @@ public class maxArrows :  effectBasic {
 	float maxCount =3;//最多弹矢数量
 	GameObject theArrow;//真正的弹矢
 
-	float damageTruePercent = 0.1f;//额外真实伤害
+	float damageTruePercent = 0.3f;//转化的真实伤害百分比
 
 	int makeDamageCount = 0;//因为有冷却时间，这个伤害需要计数器进行控制
 
@@ -62,6 +62,7 @@ public class maxArrows :  effectBasic {
 
 		StartCoroutine(arrows());
 	} 
+
 	public override void updateEffect ()
 	{
 		forward = this.thePlayer.transform.forward;
@@ -76,6 +77,7 @@ public class maxArrows :  effectBasic {
 
 		Destroy (theArrow,arrowLife);
 	}
+
 	IEnumerator arrows()
 	{
 		for (int i = 0; i < maxCount; i++) 

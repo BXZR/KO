@@ -247,7 +247,7 @@ public class move : MonoBehaviour {
 			Quaternion t = Quaternion.LookRotation (pos);
 			t.x = 0;
 			t.z = 0;
-			thePlayer.transform.rotation = Quaternion.Slerp (thePlayer.transform.rotation ,t,Time .deltaTime *30);
+			thePlayer.transform.rotation = Quaternion.Slerp (thePlayer.transform.rotation ,t,Time .deltaTime *60);
 			//禁止除了Y轴之外的其他轴的旋转
 			//15是转身速率，太慢会转不过来身体导致偏离坐标位置，太快没效果
 		}

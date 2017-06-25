@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class attackSpeedUp :  effectBasic {
 
 	float coolingTime = 17f;//冷却时间，这个技能太强大了，如果没有冷却时间会出事
@@ -9,7 +10,7 @@ public class attackSpeedUp :  effectBasic {
 	GameObject theEffect;//效果
 	Transform theArm;
 	private  bool isOpened = false;//效果开启
-	private float attackSpeedAdd = 2.0f;//增加200%攻击速度
+	private float attackSpeedAdd =5.0f;//增加200%攻击速度
 	/*********************************************/
 	GameObject Arrow;//弹矢引用保存
 	GameObject theArrow;
@@ -26,7 +27,7 @@ public class attackSpeedUp :  effectBasic {
 	public override void Init ()
 	{
 		theEffectName = "射手的专注";
-		theEffectInformation = "灵敏度增加"+attackSpeedAdd *100+"%，持续"+lastingTime+"秒,冷却"+coolingTime+"秒\n下一击造成双倍伤害（不附加特效）\n高速状态下攻击命中恢复"+hpup+"生命值\n冷却中使用将转化为慢速普通射击";
+		theEffectInformation = "冰霜射击速度增加"+attackSpeedAdd *100+"%，持续"+lastingTime+"秒,冷却"+coolingTime+"秒\n下一击造成双倍伤害（不附加特效）\n高速状态下攻击命中恢复"+hpup+"生命值\n冷却中使用将转化为慢速普通射击";
 		makeStart ();
 		makeAdd ();
 
@@ -41,8 +42,8 @@ public class attackSpeedUp :  effectBasic {
 
 	public override void updateEffect ()
 	{
-
-		Invoke ("forUpdate",0.6f);
+		//这个加速技能在冷却的时候却比较慢，所以需要一个延迟的时间来匹配动作
+		Invoke ("forUpdate",0.3f);
 	}
 
 
@@ -90,14 +91,39 @@ public class attackSpeedUp :  effectBasic {
 
 	void  makeAdd()
 	{
+		//Animator theAction =	this.thePlayer.GetComponentInChildren<Animator> ();
+		//theAction  .speed += attackSpeedAdd;
+
+		//只修改某一层的某一个动画的播放速度的代码
+		//很有用，千万注意
 		Animator theAction =	this.thePlayer.GetComponentInChildren<Animator> ();
-		theAction.speed += attackSpeedAdd;
+		UnityEditor.Animations .AnimatorController ac = theAction.runtimeAnimatorController as UnityEditor.Animations .AnimatorController  ;
+		int idForLayer = systemValues.theAttackLayerIndex;
+		for (int i = 0; i < ac.layers [idForLayer].stateMachine.states.Length; i++) 
+		{    
+			if (ac.layers [idForLayer].stateMachine.states [i].state.name == "punch1")
+			{    
+				ac.layers [idForLayer].stateMachine.states [i].state.speed += attackSpeedAdd;    
+			}    
+		}  
 	}
 
 	void makeOver()
 	{
+		//Animator theAction =	this.thePlayer.GacetComponentInChildren<Animator> ();
+		//theAction.speed -= attackSpeedAdd;
+
 		Animator theAction =	this.thePlayer.GetComponentInChildren<Animator> ();
-		theAction.speed -= attackSpeedAdd;
+		UnityEditor.Animations .AnimatorController ac = theAction.runtimeAnimatorController as UnityEditor.Animations .AnimatorController  ;
+		int idForLayer = systemValues.theAttackLayerIndex;
+		for (int i = 0; i < ac.layers [idForLayer].stateMachine.states.Length; i++) 
+		{    
+			if (ac.layers [idForLayer].stateMachine.states [i].state.name == "punch1") 
+			{    
+				ac.layers [idForLayer].stateMachine.states [i].state.speed -= attackSpeedAdd;    
+			}    
+		}    
+	    
 	}
 
 

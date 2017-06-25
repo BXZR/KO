@@ -10,7 +10,7 @@ public class attackSpeedUp :  effectBasic {
 	GameObject theEffect;//效果
 	Transform theArm;
 	private  bool isOpened = false;//效果开启
-	private float attackSpeedAdd =5.0f;//增加200%攻击速度
+	private float attackSpeedAdd =4.0f;//增加200%攻击速度
 	/*********************************************/
 	GameObject Arrow;//弹矢引用保存
 	GameObject theArrow;
@@ -27,7 +27,7 @@ public class attackSpeedUp :  effectBasic {
 	public override void Init ()
 	{
 		theEffectName = "射手的专注";
-		theEffectInformation = "冰霜射击速度增加"+attackSpeedAdd *100+"%，持续"+lastingTime+"秒,冷却"+coolingTime+"秒\n下一击造成双倍伤害（不附加特效）\n高速状态下攻击命中恢复"+hpup+"生命值\n冷却中使用将转化为慢速普通射击";
+		theEffectInformation = "冰霜射速增加"+attackSpeedAdd *100+"%，持续"+lastingTime+"秒,冷却"+coolingTime+"秒\n下一击造成双倍伤害（不附加特效）\n高速状态下攻击命中恢复"+hpup+"生命值\n冷却中使用将转化为慢速普通射击";
 		makeStart ();
 		makeAdd ();
 

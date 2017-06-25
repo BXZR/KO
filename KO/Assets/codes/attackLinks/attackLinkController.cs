@@ -13,6 +13,7 @@ public class attackLinkController : MonoBehaviour {
 	private KeyCode keyUse;// 检测到的键值
 	public float timerForLinkAtack=0.5f;//必须在一定时间内按出来这个串，否则无法使用技能
 	public float timerAddForCheck= 0.2f;//按对了一次按键得到的时间奖励
+	//有问题就是，如果只是一个键位的普通攻击，这个时间奖励就会成为额外的等待时间而造成卡顿
 	private float timerForLinkMax = 0.5f;//tim的erForLinkAtack的默认最大时间
 	bool startTimer = false;//是否开启计时器
 	public float timerDifficulty = 0.75f;//时间难度，越大难度越大
@@ -290,6 +291,7 @@ public class attackLinkController : MonoBehaviour {
 	{
 		if (isStarted&& startTimer && thePlayer.isAlive) 
 		{
+			//存在一个等待的时间
 			timerForLinkAtack -= Time.deltaTime;
 			if (timerForLinkAtack <= 0) 
 			{
@@ -297,7 +299,6 @@ public class attackLinkController : MonoBehaviour {
 				reMake();//参数更新
 			}
 		}
-	    
 		//if (thePlayer.isAlive == false)
 		//{
 				/*

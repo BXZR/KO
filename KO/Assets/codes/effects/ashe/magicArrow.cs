@@ -50,9 +50,9 @@ public class magicArrow :  effectBasic {
 			{
 				Destroy (theArrow );
 			}
-			catch(Exception d)
+			catch
 			{
-				//print (d.ToString());
+				//print ("箭矢销毁失败");
 			}
 		}
 	}

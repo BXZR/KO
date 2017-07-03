@@ -31,6 +31,7 @@ public class move : MonoBehaviour {
 	float forwardA = 0;//记录输入轴横轴的值，减少Input的获取
 	float upA = 0;//记录输入轴的纵轴的值减少Input的获取
 	//float leftA = 0;//记录输入轴的纵轴的值减少Input的获取
+	private bool canMoveForPrivate = true;//此单位可以被移动这个移动仅仅在内部使用，作为一个内部控制变量(两层控制)
 	public bool canMove = false;//此单位可以被移动
 	public bool canLook = true;//此单位额可以看向目标
 	public bool canGravity = true;//存在重力（大多数情况下是需要考虑重力的）
@@ -42,7 +43,8 @@ public class move : MonoBehaviour {
 	//因为此游戏是2D横版格斗游戏，所以尽可能要保证X坐标轴的值要想等
 	//当然，也可以使用摄像机的方法使得造成的偏移无效果
 	private   float startPositionX;//起始坐标
-
+	//用于看向目标的插值用四元组
+	private Quaternion lookAtSlerpPosition ; 
 
 	void Start () 
 	{
@@ -104,7 +106,7 @@ public class move : MonoBehaviour {
 		float ZMove = 0f;
 		Vector3 moveDirectionAction = Vector3.zero;
 
-		if (thePlayer &&　canMove) 
+		if (thePlayer &&　canMove && canMoveForPrivate) 
 		{
 			//print ("=="+this.name +"---"+forwardA +"---"+upA);
 			forwardA *= thePlayer.ActerMoveSpeedPercent;
@@ -241,19 +243,47 @@ public class move : MonoBehaviour {
 	{
 		if (theEneMy  && thePlayer )
 		{
-			
+
 			Vector3 pos = theEneMy  .transform .position - thePlayer.transform.position;
 
-			Quaternion t = Quaternion.LookRotation (pos);
-			t.x = 0;
-			t.z = 0;
-			thePlayer.transform.rotation = Quaternion.Slerp (thePlayer.transform.rotation ,t,Time .deltaTime *60);
+			//用于看向目标的插值用四元组
+			lookAtSlerpPosition = Quaternion.LookRotation (pos);
+			lookAtSlerpPosition.x = 0;
+			lookAtSlerpPosition.z = 0;
+			thePlayer.transform.rotation = Quaternion.Slerp (thePlayer.transform.rotation ,lookAtSlerpPosition,Time .deltaTime *25f);
 			//禁止除了Y轴之外的其他轴的旋转
 			//15是转身速率，太慢会转不过来身体导致偏离坐标位置，太快没效果
+
 		}
 	}
-
- 
+	//转身的时候禁止移动
+	//这个方法会在人物转身的时候在一定的界限之内禁止人物的移动
+	//这个也算是符合人物“仿真的要求”
+	//但是，这个方法并不能完全保证不会出现因为旋转角，碰撞器，高速操作等等因素造成的人物旋转角度的不正确
+	private void fixLookMove(bool isUsed = true)
+	{
+		if (isUsed)
+		{
+			//强制的限定做法，在转身的时候不能够移动
+			float minus = Mathf.Abs (thePlayer.transform.rotation.y - lookAtSlerpPosition.y);
+			//print ("ddd - " + minus);
+			//这个是一个比较粗糙的界限
+			//人物旋转角度四元组跟碰撞器还有点关系，在碰撞的时候会有小误差，在这里也需要考虑到
+			if (minus > 0.2f && minus < 0.8f)
+			{//如果有完全错过的情况也可以移动
+				canMoveForPrivate = false;
+				print ("ty " + lookAtSlerpPosition.y + " ---- zy" + thePlayer.transform.rotation.y);
+			}
+			else 
+			{
+				canMoveForPrivate = true;
+			}
+		}
+		else 
+		{
+			canMoveForPrivate = true;//如果不使用这个 限制效果，也需要把开关打开
+		}
+	}
 
 	public void beMakeBack(float speed)//被强制击退
 	{
@@ -291,8 +321,9 @@ public class move : MonoBehaviour {
 			forwardA = Input.GetAxis (forwardAxisName);
 			upA = Input.GetAxis (upAxisName);
 			moveAction (forwardA, upA);
-			fixXPosition ();//更新x轴坐标（说实话不是什么好方法）-------------------------这个方法很偶然的时候会失效
-
+			fixXPosition ();
+			//更新x轴坐标（说实话不是什么好方法）-------------------------这个方法很偶然的时候会失效
+			//上面限制x坐标的方法先留着，我在插值旋转的时候限制了移动，只有转过身才可以做移动这样这个x限制的作用被减小，但是为了保险起见，这个方法暂时保留
         	/********************看向目标********************************************************/
 			if (canLook)
 			{
@@ -301,14 +332,18 @@ public class move : MonoBehaviour {
 				if (this.transform.position.y > lookHeight)
 				{
 					lookAtEMY (true);
-					fixRotation ();
+					fixRotation ();//立刻看向目标， 这个其实在上面的方法中已经有效果，在这里仅仅做一个备用修正
+					fixLookMove (false);
 				} 
 				else
-					lookAtEMY (false);
+				{
+					lookAtEMY (false);//缓慢看向目标的时候转身过程中已经不能移动
+					fixLookMove ();
+				}
 				//偷袭，约过敌人头顶的时候敌人没反应过来但是自己已经转身
 				if (this.transform.position.y > lookHeight && Mathf.Abs (this.transform.position.z - theEneMy.transform.position.z) > 0.3f || this.GetComponent <AI_stage> ())
 					lookAtEmyImmediate ();
-			
+				
 			}
 			/******************************************************************************************************/
 			//下面是最保险的方法，留着使用

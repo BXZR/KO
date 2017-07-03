@@ -64,9 +64,9 @@ public class effectChongjibo: effectBasic {
 			{
 				Destroy (chongjibo );
 			}
-			catch(Exception d)
+			catch
 			{
-				//print (d.ToString());
+				//print ("冲击波销毁失败");
 			}
 		}
 	}

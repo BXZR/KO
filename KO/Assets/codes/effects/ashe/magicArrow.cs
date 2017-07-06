@@ -16,7 +16,7 @@ public class magicArrow :  effectBasic {
 	private bool  yun =false;//是否已经使用了击晕
 
 	public static jiyun jiyunSave;//保留引用
-	float damageLater = 50;
+	float damageLater = 60;
 
 	void Start () 
 	{

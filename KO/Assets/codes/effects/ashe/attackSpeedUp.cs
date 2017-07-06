@@ -10,13 +10,14 @@ public class attackSpeedUp :  effectBasic {
 	GameObject theEffect;//效果
 	Transform theArm;
 	private  bool isOpened = false;//效果开启
-	private float attackSpeedAdd =4.0f;//增加200%攻击速度
+	private int coutHpUp =10;//可吸血上限次数
+	private float theSpeedAdd =0.3f;//增加XXXX%速度
 	/*********************************************/
 	GameObject Arrow;//弹矢引用保存
 	GameObject theArrow;
 	Vector3 forward;
 	float arrowLife = 0.3f;// 弹矢生存时间
-	float hpup = 8f;//攻击命中的恢复的生命值
+	float hpup = 20f;//攻击命中的恢复的生命值
 
 	bool doubled = false;
 
@@ -27,7 +28,7 @@ public class attackSpeedUp :  effectBasic {
 	public override void Init ()
 	{
 		theEffectName = "射手的专注";
-		theEffectInformation = "冰霜射速增加"+attackSpeedAdd *100+"%，持续"+lastingTime+"秒,冷却"+coolingTime+"秒\n下一击造成双倍伤害（不附加特效）\n高速状态下攻击命中恢复"+hpup+"生命值\n冷却中使用将转化为慢速普通射击";
+		theEffectInformation = "速度增加"+theSpeedAdd *100+"%，持续"+lastingTime+"秒,冷却"+coolingTime+"秒\n下一击造成双倍伤害（不附加特效）\n攻击命中恢复"+hpup+"生命值,最多触发"+coutHpUp+"次\n冷却中使用将转化为慢速普通射击";
 		makeStart ();
 		makeAdd ();
 
@@ -80,13 +81,20 @@ public class attackSpeedUp :  effectBasic {
 
 	public override void OnAttack ()
 	{
-		if (isOpened)
-		this.thePlayer.ActerHp += hpup;
+		if (isOpened && coutHpUp > 0) 
+		{
+			coutHpUp--;
+			this.thePlayer.ActerHp += hpup;
+		}
 	}
 
 	public override void OnAttack (PlayerBasic aim)
 	{
+		if(	doubled == false)
+		{
+			doubled = true;
 		this.thePlayer.OnAttackWithoutEffect (aim);//不附加特效
+		}
 	}
 
 	void  makeAdd()
@@ -95,9 +103,11 @@ public class attackSpeedUp :  effectBasic {
 		//theAction  .speed += attackSpeedAdd;
 
 		//只修改某一层的某一个动画的播放速度的代码
-		//很有用，千万注意
+		//很有用，千万注意编译出去不能够使用，因为是Editor
 		Animator theAction =	this.thePlayer.GetComponentInChildren<Animator> ();
-		UnityEditor.Animations .AnimatorController ac = theAction.runtimeAnimatorController as UnityEditor.Animations .AnimatorController  ;
+		theAction .speed += theSpeedAdd ;
+		this.thePlayer.ActerMoveSpeedPercent += theSpeedAdd;
+		/*UnityEditor.Animations .AnimatorController ac = theAction.runtimeAnimatorController as UnityEditor.Animations .AnimatorController  ;
 		int idForLayer = systemValues.theAttackLayerIndex;
 		for (int i = 0; i < ac.layers [idForLayer].stateMachine.states.Length; i++) 
 		{    
@@ -105,7 +115,7 @@ public class attackSpeedUp :  effectBasic {
 			{    
 				ac.layers [idForLayer].stateMachine.states [i].state.speed += attackSpeedAdd;    
 			}    
-		}  
+		} */
 	}
 
 	void makeOver()
@@ -114,6 +124,9 @@ public class attackSpeedUp :  effectBasic {
 		//theAction.speed -= attackSpeedAdd;
 
 		Animator theAction =	this.thePlayer.GetComponentInChildren<Animator> ();
+		theAction .speed -= theSpeedAdd;
+		this.thePlayer.ActerMoveSpeedPercent -= theSpeedAdd;
+		/*
 		UnityEditor.Animations .AnimatorController ac = theAction.runtimeAnimatorController as UnityEditor.Animations .AnimatorController  ;
 		int idForLayer = systemValues.theAttackLayerIndex;
 		for (int i = 0; i < ac.layers [idForLayer].stateMachine.states.Length; i++) 
@@ -122,7 +135,8 @@ public class attackSpeedUp :  effectBasic {
 			{    
 				ac.layers [idForLayer].stateMachine.states [i].state.speed -= attackSpeedAdd;    
 			}    
-		}    
+		} 
+		*/
 	    
 	}
 

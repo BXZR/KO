@@ -272,7 +272,7 @@ public class move : MonoBehaviour {
 			if (minus > 0.2f && minus < 0.8f)
 			{//如果有完全错过的情况也可以移动
 				canMoveForPrivate = false;
-				print ("ty " + lookAtSlerpPosition.y + " ---- zy" + thePlayer.transform.rotation.y);
+				//print ("ty " + lookAtSlerpPosition.y + " ---- zy" + thePlayer.transform.rotation.y);
 			}
 			else 
 			{

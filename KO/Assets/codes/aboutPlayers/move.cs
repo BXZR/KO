@@ -64,7 +64,8 @@ public class move : MonoBehaviour {
 		makeAxis ();
 		lookAtEmyImmediate ();
 		isStarted = true;
-		lookHeight = jumpMaxHeight /2;
+        //lookHeight的值不可以太高，当两个物体重叠的时候触发lookHeight会出现死循环的互相观看
+		lookHeight = jumpMaxHeight * 0.4f;
 		startPositionX = this.transform.position.x;
 	}
 
@@ -106,8 +107,10 @@ public class move : MonoBehaviour {
 		float ZMove = 0f;
 		Vector3 moveDirectionAction = Vector3.zero;
 
-		if (thePlayer &&　canMove && canMoveForPrivate) 
+		if (thePlayer &&　canMove ) 
 		{
+			if (canMoveForPrivate == false)
+				return;
 			//print ("=="+this.name +"---"+forwardA +"---"+upA);
 			forwardA *= thePlayer.ActerMoveSpeedPercent;
 			upA *= thePlayer.ActerMoveSpeedPercent;
@@ -169,10 +172,12 @@ public class move : MonoBehaviour {
 			moveDirectionAction.z = 0;
 			//print (Mathf.Abs (EMY.transform.position.z - this.transform.position.z));
 		} 
-		else if (disP < 0.3f && this.transform.position.y >= 0.5f)
+		else if (disP < 0.5f && this.transform.position.y >= 0.5f)
 		{
 			//当越过头顶的时候需要加一下速度，因可能防止站在对手头顶上面
-			moveDirectionAction.z = this.transform.forward.z * 0.17f;//进行强制高度移动
+			//强制移动距离不可以太小
+			//强制移动速度也不可以太小
+			moveDirectionAction.z = this.transform.forward.z * 0.5f;//进行强制高度移动
 		}
 
 		/*************************************重力控制**************************************************/
@@ -244,22 +249,25 @@ public class move : MonoBehaviour {
 		if (theEneMy  && thePlayer )
 		{
 
-			Vector3 pos = theEneMy  .transform .position - thePlayer.transform.position;
+			Vector3 pos = theEneMy  .transform.position - thePlayer.transform.position;
 
 			//用于看向目标的插值用四元组
 			lookAtSlerpPosition = Quaternion.LookRotation (pos);
 			lookAtSlerpPosition.x = 0;
 			lookAtSlerpPosition.z = 0;
-			thePlayer.transform.rotation = Quaternion.Slerp (thePlayer.transform.rotation ,lookAtSlerpPosition,Time .deltaTime *25f);
+			thePlayer.transform.rotation = Quaternion.Slerp (thePlayer.transform.rotation ,lookAtSlerpPosition,Time .deltaTime *15f);
 			//禁止除了Y轴之外的其他轴的旋转
 			//15是转身速率，太慢会转不过来身体导致偏离坐标位置，太快没效果
 
 		}
 	}
+
 	//转身的时候禁止移动
 	//这个方法会在人物转身的时候在一定的界限之内禁止人物的移动
 	//这个也算是符合人物“仿真的要求”
 	//但是，这个方法并不能完全保证不会出现因为旋转角，碰撞器，高速操作等等因素造成的人物旋转角度的不正确
+
+	//这个方法非常的严苛，尽可能不要使用
 	private void fixLookMove(bool isUsed = true)
 	{
 		if (isUsed)
@@ -314,6 +322,53 @@ public class move : MonoBehaviour {
 	}
 
 
+	void makeLook()
+	{
+		if (!canLook)
+			return;
+		//lookHeight的值不可以太高，当两个物体重叠的时候触发lookHeight会出现死循环的互相观看
+		if (this.transform.position.y > lookHeight && theEneMy.transform.position.y > lookHeight)
+		{
+			//敌我双方都在半空中，那么无阻力直接互相看向目标
+			//随后做出坐标和旋转的修正
+			lookAtEmyImmediate ();
+			fixRotation ();
+			fixXPosition ();
+		}
+
+		else if (this.transform.position.y > lookHeight && theEneMy.transform.position.y <= lookHeight )
+		{
+			//如果自己在半空中，而对手在地面
+			//那么越过目标一定距离之后，自己无阻力转身
+			//随后做出坐标和旋转的修正
+			if (Mathf.Abs (this.transform.position.z - theEneMy.transform.position.z) > 1f)
+			{
+				//print ("high look");
+				lookAtEmyImmediate ();
+				fixRotation ();
+				fixXPosition ();
+			}
+		}
+		else if (this.transform.position.y <= lookHeight && theEneMy.transform.position.y > lookHeight)
+		{
+			//敌人从自己的视野中消失，自己没有足够的信息，所以什么都不做
+			//lookAtEmyImmediate ();
+			fixXPosition ();
+			fixRotation ();
+		}
+		else if (this.transform.position.y <= lookHeight && theEneMy.transform.position.y <= lookHeight)
+		{
+			//当双方的高度都不是很高的时候
+			//自己需要转身看向目标
+			lookAtEMY (false);
+			//缓慢看向目标的时候转身过程中已经不能移动
+		//	fixLookMove ();
+		}
+       //在有人半空中的状态下两个人的位置坐标和旋转坐标会有所修正
+		//规定，只有双方都在地面上才会使用插值旋转大法(因为已经fix过所有的位置，所以转身造成的误差会变得很小了)
+	 
+	}
+
 	void Update ()
 	{
 		if (isStarted) 
@@ -325,26 +380,7 @@ public class move : MonoBehaviour {
 			//更新x轴坐标（说实话不是什么好方法）-------------------------这个方法很偶然的时候会失效
 			//上面限制x坐标的方法先留着，我在插值旋转的时候限制了移动，只有转过身才可以做移动这样这个x限制的作用被减小，但是为了保险起见，这个方法暂时保留
         	/********************看向目标********************************************************/
-			if (canLook)
-			{
-				//不允许在半空中太高的地方看向目标
-				//但也因此这个游戏在坐标和大小上恐怕需要有比较高的要求。
-				if (this.transform.position.y > lookHeight)
-				{
-					lookAtEMY (true);
-					fixRotation ();//立刻看向目标， 这个其实在上面的方法中已经有效果，在这里仅仅做一个备用修正
-					fixLookMove (false);
-				} 
-				else
-				{
-					lookAtEMY (false);//缓慢看向目标的时候转身过程中已经不能移动
-					fixLookMove ();
-				}
-				//偷袭，约过敌人头顶的时候敌人没反应过来但是自己已经转身
-				if (this.transform.position.y > lookHeight && Mathf.Abs (this.transform.position.z - theEneMy.transform.position.z) > 0.3f || this.GetComponent <AI_stage> ())
-					lookAtEmyImmediate ();
-				
-			}
+				makeLook ();
 			/******************************************************************************************************/
 			//下面是最保险的方法，留着使用
 			//if (thePlayer && thePlayer.canLook && Mathf.Abs (this.transform.position.y - theEneMy.transform.position.y) < 1.25f)//因为有在半空中的情况，事实上检测本人坐标很小不是一个值得推崇的方法

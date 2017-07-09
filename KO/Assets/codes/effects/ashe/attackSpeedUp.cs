@@ -36,7 +36,7 @@ public class attackSpeedUp :  effectBasic {
 		theArm =   this.GetComponentInChildren<playerWeapon>().gameObject .transform  ;
 		theEffect.transform.SetParent (theArm);
 		theEffect.transform.localPosition = Vector3.zero;
-
+		theEffect .transform .localScale*= thePlayer.transform.localScale.y;
 		isOpened = true;
 		Destroy (this.GetComponent(this.GetType()),coolingTime);
 	}
@@ -56,7 +56,8 @@ public class attackSpeedUp :  effectBasic {
 		theArrow = (GameObject)GameObject .Instantiate( Arrow);
 		theArrow.GetComponent <extraWeapon> ().setPlayer (this.thePlayer);
 
-		Vector3 positionNew = thePlayer.transform.position + new Vector3 (0,1f,forward .normalized.z*0.1f) ;
+		Vector3 positionNew = thePlayer.transform.position + new Vector3 (0,0.8f*thePlayer .transform .localScale .y , forward .normalized.z*0.1f) ;
+		theArrow.transform.localScale *= thePlayer.transform.localScale.y;
 		theArrow.transform.position = positionNew  ;
 		theArrow.transform.forward = thePlayer.transform.forward;
 

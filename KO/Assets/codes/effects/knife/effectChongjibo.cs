@@ -35,7 +35,8 @@ public class effectChongjibo: effectBasic {
 		chongjibo.GetComponent <extraWeapon> ().setPlayer (this.thePlayer);
 		forward = thePlayer.transform.forward;//记录向前的方向
 
-		Vector3 positionNew = thePlayer.transform.position + new Vector3 (0,0.5f,forward .normalized.z*0.1f) ;
+		Vector3 positionNew = thePlayer.transform.position + new Vector3 (0,0.8f*thePlayer .transform .localScale .y , forward .normalized.z*0.1f) ;
+		chongjibo.transform.localScale *= thePlayer.transform.localScale.y;
 		chongjibo.transform.position = positionNew  ;
 
 		chongjibo.transform.forward = forward;

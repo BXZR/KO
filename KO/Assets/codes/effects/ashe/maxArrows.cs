@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using UnityEngine.SceneManagement;
 
 public class maxArrows :  effectBasic {
 
@@ -58,10 +59,25 @@ public class maxArrows :  effectBasic {
 		makeStart ();
 		forward = this.thePlayer.transform.forward;
 		Arrow = (GameObject)  Resources.Load ("effects/aShe_Arrow");
+		StartCoroutine (arrows ());
 
-
-		StartCoroutine(arrows());
 	} 
+
+	public override void effectDestoryExtra ()
+	{
+		
+		if (theArrow)
+		{
+			try
+			{
+				Destroy (theArrow );
+			}
+			catch(Exception d)
+			{
+				//print (d.ToString());
+			}
+		}
+	}
 
 	public override void updateEffect ()
 	{
@@ -71,10 +87,11 @@ public class maxArrows :  effectBasic {
 		theArrow = (GameObject)GameObject .Instantiate( Arrow);
 		theArrow.GetComponent <extraWeapon> ().setPlayer (this.thePlayer);
 
-		Vector3 positionNew = thePlayer.transform.position + new Vector3 (0,0.9f,forward .normalized.z*0.1f) ;
+		Vector3 positionNew = thePlayer.transform.position + new Vector3 (0,0.8f*thePlayer .transform .localScale .y , forward .normalized.z*0.1f) ;
+		theArrow.transform.localScale *= thePlayer.transform.localScale.y;
 		theArrow.transform.position = positionNew  ;
 		theArrow.transform.forward = thePlayer.transform.forward;
-
+		theArrow.name = "maxArrow_2";
 		Destroy (theArrow,arrowLife);
 	}
 
@@ -85,10 +102,11 @@ public class maxArrows :  effectBasic {
 			theArrow = (GameObject)GameObject.Instantiate (Arrow);
 			theArrow.GetComponent <extraWeapon> ().setPlayer (this.thePlayer);
 
-			Vector3 positionNew = thePlayer.transform.position + new Vector3 (0, 1f, forward.normalized.z * 0.1f);
+			Vector3 positionNew = thePlayer.transform.position + new Vector3 (0,0.8f*thePlayer .transform .localScale .y , forward .normalized.z*0.1f) ;
+			theArrow.transform.localScale *= thePlayer.transform.localScale.y;
 			theArrow.transform.position = positionNew;
 			theArrow.transform.forward = thePlayer.transform.forward;
-
+			theArrow.name = "maxArrow";
 			Destroy (theArrow, arrowLife);
 			Destroy (this.GetComponent (this.GetType ()), lastingTime);
 			yield return new WaitForSeconds (0.1f);

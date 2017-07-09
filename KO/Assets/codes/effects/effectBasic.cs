@@ -27,7 +27,7 @@ public class effectBasic : MonoBehaviour {
 	virtual public void updateEffect(){}
 	public virtual void Init(){}//初始化的方法
 	public virtual void effectDestory(){}//销毁的方法
-
+	public virtual void effectDestoryExtra(){}//手动调用的额外销毁方法
 	public virtual void makeInformation(){}
 	//返回这个效果的信息
 	public  virtual  string getInformation ()

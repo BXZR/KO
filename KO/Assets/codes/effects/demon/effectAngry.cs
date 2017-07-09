@@ -24,6 +24,9 @@ public class effectAngry: effectBasic {
 		theEffectP = (GameObject)Resources.Load ("effects/evilAngry");
 		theEffect = GameObject.Instantiate (theEffectP);
 		theEffect.transform.parent = thePlayer.transform;
+		theEffect.transform.localScale *= thePlayer.transform.localScale.y;
+		theEffect.GetComponentInChildren<ParticleSystem> ().startSize *= thePlayer.transform.localScale.y;
+
 		theEffect.transform.position = thePlayer.transform.position;
 		thePlayer.ActerSuperBaldePercent += superBladePercentAdd;
 	}

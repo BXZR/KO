@@ -21,21 +21,21 @@ public class asheBasicAttack : effectBasic {
 			Init ();//进行初始化
 		}
 
- 
-//	public override void effectDestory ()
-//	{
-//		if (theArrow)
-//		{
-//			try
-//			{
-//				Destroy (theArrow );
-//			}
-//			catch(Exception d)
-//			{
-//				//print (d.ToString());
-//			}
-//		}
-//	}
+    //手动调用的额外销毁方法
+	public override void effectDestoryExtra ()
+	{
+		if (theArrow)
+		{
+			try
+			{
+				Destroy (theArrow );
+			}
+			catch(Exception d)
+			{
+				//print (d.ToString());
+			}
+		}
+	}
 		public override void Init ()
 		{
 			theEffectName = "射击";
@@ -47,12 +47,13 @@ public class asheBasicAttack : effectBasic {
 			theArrow = (GameObject)GameObject .Instantiate( Arrow);
 			theArrow.GetComponent <extraWeapon> ().setPlayer (this.thePlayer);
 
-			Vector3 positionNew = thePlayer.transform.position + new Vector3 (0,1f, forward .normalized.z*0.1f) ;
+		    Vector3 positionNew = thePlayer.transform.position + new Vector3 (0,0.8f*thePlayer .transform .localScale .y , forward .normalized.z*0.1f) ;
+		    theArrow.transform.localScale *= thePlayer.transform.localScale.y;
 			theArrow.transform.position = positionNew  ;
 			theArrow.transform.forward = thePlayer.transform.forward;
+			Destroy (theArrow, arrowLife);
+			Destroy (this.GetComponent (this.GetType ()), lastingTime);
 
-			Destroy (theArrow,arrowLife);
-		    Destroy (this.GetComponent(this.GetType()),lastingTime);
 		} 
 
 	}

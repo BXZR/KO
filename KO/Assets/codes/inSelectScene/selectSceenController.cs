@@ -9,6 +9,9 @@ public class selectSceenController : MonoBehaviour
 
 	private GameObject theGameObject ;//显示的模型信息，其实是为了方便删除
 	public Transform showPosition;//显示的位置
+	//(这是使用3D世界坐标制作的标记方法，现在先用下面的2D转世界坐标的方法替换,但是这个方法仍然保留)
+	public Canvas theCanvas;//用showPosition2D计算反推三维世界坐标的时候需要有这个作为依据）
+	public Transform showPosition2D;//显示的位置
 	public Text theNameText;//显示人物的名字（感觉其实可有可无）
 	public GameObject selectOverPanel;//选择完成显示的界面
 
@@ -25,11 +28,11 @@ public class selectSceenController : MonoBehaviour
 	public static int step =0;//为了方便做成静态的，算是选择界面的systemValues
 	public static int stepMax =2;//因为人人对战的时候是需要选择两次
 
-
-	private float minFov = 1f;//最小缩放值
-	private float maxFov = 1.5f;//最大缩放值
+	//因为是屏幕坐标转的世界坐标，其基础的缩放值会很小，因此需要使用比较大的缩放
+	private float minFov =3f;//最小缩放值
+	private float maxFov = 4.6f;//最大缩放值
 	private float sensitivity = 1f;//增大减小的参数
-	private float fov =1;//获取当前缩放值
+	private float fov = 3.7f;//获取当前缩放值
 
 	public GameObject[] thePanels;//被控制的面板用这种方式控制，所以下标顺序非常的重要
 	 
@@ -65,14 +68,24 @@ public class selectSceenController : MonoBehaviour
 		thePanels [index].SetActive(true);
 	}
 
+	//用UGUI坐标转换游戏世界的坐标
+	//用的是屏幕的UI坐标转的世界坐标
+	Vector3 getPosition(Transform theshowPositionOnScreen , Canvas theCanvas)
+	{
+		Vector3 scr= RectTransformUtility.WorldToScreenPoint(theCanvas.worldCamera, theshowPositionOnScreen.position);
+	   scr.z = Mathf.Abs(Camera.main.transform.position.z - transform.position.z);
+	   return Camera.main.ScreenToWorldPoint(scr);
+    }
+
 	public void makeMode(string nameGet)
 	{
 		if(theGameObject)
 		Destroy (theGameObject .gameObject);
 		theGameObject = (GameObject)GameObject.Instantiate ((GameObject )Resources.Load("fighters/"+nameGet));
 		//theGameObject.transform.position = showPosition.position;
-		theGameObject.transform.SetParent (showPosition);
-		theGameObject.transform.localPosition = new Vector3 (0,0,0);
+		//theGameObject.transform.SetParent (showPosition);
+		//theGameObject.transform.localPosition = new Vector3 (0,0,0);
+		theGameObject .transform .position =  getPosition(showPosition2D.GetComponent<Transform>(), theCanvas) ;
 
 		theGameObject.AddComponent (System.Type.GetType ("extraRotate"));
 		PlayerBasic thePlayer = theGameObject.GetComponent<PlayerBasic> ();
@@ -170,6 +183,7 @@ public class selectSceenController : MonoBehaviour
 					theSkillInformationOfPlayerList.Add ("-");	
 				   }
 				}
+			effectsPE [i].effectDestoryExtra ();
 			effectsPE [i].effectDestory ();
 			Destroy (thePlayer.GetComponent (effectsPE [i].GetType()),0.004f);
 		}

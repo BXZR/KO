@@ -15,6 +15,7 @@ public class effectHit  :  effectBasic {
 		theArm = this.transform.GetComponentsInChildren<playerWeapon>()[length-1].transform ;
 		theEffect = GameObject.Instantiate<GameObject> (Resources.Load<GameObject> ("effects/demonHit"));
 		theEffect.transform.SetParent (theArm);
+		theEffect.GetComponentInChildren<ParticleSystem> ().startSize *= thePlayer.transform.localScale.y;
 		theEffect.transform.localPosition = new Vector3 (-0.08f,0,0);
 	}
 

@@ -31,7 +31,9 @@ public class effectGuiPaiqigong : effectBasic {
 		theShield = (GameObject)GameObject .Instantiate(  (GameObject)Resources.Load ("effects/guipaiqigongshield"));
 		theShield.transform.parent = thePlayer.transform;
 		theShield.transform.localPosition = new Vector3 (0f,0.5f,-0.1f);
-		theShield.transform.localScale = new Vector3 (5,5,5);
+		//theShield .transform .localScale*= thePlayer.transform.localScale.y;
+		theShield.GetComponentInChildren<ParticleSystem> ().startSize *= thePlayer.transform.localScale.y;
+
 		 GuiPaiQiGong();	 
 	} 
  
@@ -88,9 +90,11 @@ public class effectGuiPaiqigong : effectBasic {
 	{
  
 		qigongbo= GameObject.Instantiate ((GameObject)Resources.Load ("effects/wukongguipaiqigong"));
+		qigongbo .GetComponentInChildren<ParticleSystem> ().startSize *= thePlayer.transform.localScale.y;
 		qigongbo.GetComponent <extraWeapon> ().setPlayer (this.thePlayer);
 		qigongbo.transform.parent = this.thePlayer.transform;
-		qigongbo.transform.position = new Vector3 (thePlayer .transform .position .x,thePlayer .transform .position.y +0.8f,thePlayer .transform .position .z-0.1f);
+		qigongbo .transform .localScale*= thePlayer.transform.localScale.y;
+		qigongbo.transform.position = new Vector3 (thePlayer .transform .position .x,thePlayer .transform .position.y +0.7f* thePlayer .transform .localScale .y ,thePlayer .transform .position .z-0.1f);
 		forwardNow = new Vector3(0,0 ,this.thePlayer .transform .forward .z);
 	}
 }

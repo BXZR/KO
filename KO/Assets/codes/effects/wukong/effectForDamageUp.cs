@@ -29,6 +29,7 @@ public class effectForDamageUp : effectBasic {
 		theEffect = GameObject.Instantiate (theEffectP);
 		theEffect.transform.parent = thePlayer.transform;
 		theEffect.transform.position = thePlayer.transform.position;
+		theEffect .transform .localScale*= thePlayer.transform.localScale.y;
 		theEffect.transform.Rotate (new Vector3 (-90,0,0));
 		thePlayer.ActerSp += thePlayer.ActerSpMax * 0.25f;
 		thePlayer.ActerHp *= 0.9f;

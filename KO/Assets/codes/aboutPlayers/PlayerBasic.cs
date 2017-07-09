@@ -211,6 +211,7 @@ public class PlayerBasic : MonoBehaviour {
 				information += "<color=#00FF00>";
 			effectsPE [i].Init ();
 			information += effectsPE [i].getInformation ()+"</color>\n\n";
+			effectsPE [i].effectDestoryExtra ();
 			effectsPE [i].effectDestory ();
 			Destroy (this.GetComponent (effectsPE [i].GetType()),0.004f);
 		}

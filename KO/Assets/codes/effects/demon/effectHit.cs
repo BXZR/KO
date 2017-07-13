@@ -17,12 +17,16 @@ public class effectHit  :  effectBasic {
 		theEffect.transform.SetParent (theArm);
 		theEffect.GetComponentInChildren<ParticleSystem> ().startSize *= thePlayer.transform.localScale.y;
 		theEffect.transform.localPosition = new Vector3 (-0.08f,0,0);
+
+		//额外添加的效果。因为这个技能的攻击力实在是太高了
+		this.thePlayer .ActerHp *= 0.97f;
 	}
+
 
 	public override void Init ()
 	{
 		theEffectName = "破灭重击";
-		theEffectInformation ="为下一次攻击蓄力并尝试进行重击\n下一击额外造成当前生命值6%真实伤害\n造成百分比伤害的22%转化为斗气值\n蓄力效果持续"+theTimer+"秒";
+		theEffectInformation ="额外消耗3%当前生命值\n为下一次攻击蓄力并尝试进行重击\n下一击额外造成当前生命值6%真实伤害\n造成百分比伤害的22%转化为斗气值\n蓄力效果持续"+theTimer+"秒";
 		makeStart ();
 		Destroy (this.gameObject .GetComponent (this.GetType()),theTimer);//为了保证灵活性，也还是应该使用人工计时的方法
 	} 

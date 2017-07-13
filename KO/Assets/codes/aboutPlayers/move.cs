@@ -277,7 +277,7 @@ public class move : MonoBehaviour {
 			//print ("ddd - " + minus);
 			//这个是一个比较粗糙的界限
 			//人物旋转角度四元组跟碰撞器还有点关系，在碰撞的时候会有小误差，在这里也需要考虑到
-			if (minus > 0.2f && minus < 0.8f)
+			if (minus > 0.15f && minus < 0.85f)
 			{//如果有完全错过的情况也可以移动
 				canMoveForPrivate = false;
 				//print ("ty " + lookAtSlerpPosition.y + " ---- zy" + thePlayer.transform.rotation.y);
@@ -309,6 +309,7 @@ public class move : MonoBehaviour {
 
 	private void fixXPosition()
 	{
+		//print ("FIX");
 		this.transform.position = new Vector3 (startPositionX,this.transform .position .y,this.transform .position .z);
 
 	}
@@ -321,9 +322,11 @@ public class move : MonoBehaviour {
 			this.transform.rotation = new Quaternion (this.transform.rotation.x,0,this.transform.rotation.z,0);
 	}
 
-
-	void makeLook()
+	//标记成为public用来给AI控制器调用
+	public void makeLook()
 	{
+	    //插值转身造成的误差会在半空中修正
+		//因此都在地面上的时候不强制修改位置和旋转角
 		if (!canLook)
 			return;
 		//lookHeight的值不可以太高，当两个物体重叠的时候触发lookHeight会出现死循环的互相观看
@@ -362,7 +365,7 @@ public class move : MonoBehaviour {
 			//自己需要转身看向目标
 			lookAtEMY (false);
 			//缓慢看向目标的时候转身过程中已经不能移动
-		//	fixLookMove ();
+			fixLookMove ();
 		}
        //在有人半空中的状态下两个人的位置坐标和旋转坐标会有所修正
 		//规定，只有双方都在地面上才会使用插值旋转大法(因为已经fix过所有的位置，所以转身造成的误差会变得很小了)
@@ -376,11 +379,11 @@ public class move : MonoBehaviour {
 			forwardA = Input.GetAxis (forwardAxisName);
 			upA = Input.GetAxis (upAxisName);
 			moveAction (forwardA, upA);
-			fixXPosition ();
+
 			//更新x轴坐标（说实话不是什么好方法）-------------------------这个方法很偶然的时候会失效
 			//上面限制x坐标的方法先留着，我在插值旋转的时候限制了移动，只有转过身才可以做移动这样这个x限制的作用被减小，但是为了保险起见，这个方法暂时保留
         	/********************看向目标********************************************************/
-				makeLook ();
+			 makeLook ();
 			/******************************************************************************************************/
 			//下面是最保险的方法，留着使用
 			//if (thePlayer && thePlayer.canLook && Mathf.Abs (this.transform.position.y - theEneMy.transform.position.y) < 1.25f)//因为有在半空中的情况，事实上检测本人坐标很小不是一个值得推崇的方法

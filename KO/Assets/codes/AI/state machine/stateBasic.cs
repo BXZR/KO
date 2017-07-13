@@ -32,7 +32,7 @@ public class stateBasic
 
 	public void lookAtEMY()//控制AI看向他的目标
 	{
-		this.theMoveController.lookAtEMY (false);
+		this.theMoveController.makeLook ();
 	}
 
 

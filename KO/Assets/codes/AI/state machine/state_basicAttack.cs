@@ -33,7 +33,7 @@ public class state_basicAttack  : stateBasic
 		theMoveController.moveAction (0,0);//虽然不移动，但是应该调用计算确保位置的正确
 
 		timer -= Time.deltaTime;
-		if (timer < 0    &&  theActionController.canChangeToNextAttack() && systemValues .canInteruptActionInAttack (theActionController))//一个动作完成了才可以开始下一个动作
+		if (timer < 0    &&  theActionController.canChangeToNextAttack())//一个动作完成了才可以开始下一个动作
 			//&&  theActionController .isAttacking()==false()这个判定条件统一放置到attackLinkController里面
 		{
 			//Debug.Log ("trueToattack!");

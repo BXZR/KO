@@ -172,12 +172,12 @@ public class move : MonoBehaviour {
 			moveDirectionAction.z = 0;
 			//print (Mathf.Abs (EMY.transform.position.z - this.transform.position.z));
 		} 
-		else if (disP < 0.5f && this.transform.position.y >= 0.5f)
+		else if (disP < 0.45f && this.transform.position.y >= 0.45f)
 		{
 			//当越过头顶的时候需要加一下速度，因可能防止站在对手头顶上面
 			//强制移动距离不可以太小
 			//强制移动速度也不可以太小
-			moveDirectionAction.z = this.transform.forward.z * 0.5f;//进行强制高度移动
+			moveDirectionAction.z = this.transform.forward.z * 0.45f;//进行强制高度移动
 		}
 
 		/*************************************重力控制**************************************************/

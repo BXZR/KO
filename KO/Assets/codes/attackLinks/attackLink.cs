@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum crossFadeMode { play , crossfade , crossfadeFix }
 public class attackLink : MonoBehaviour {
 
 	//所有atackLink的父类，子类的atackLink将会继承所有的方法并通过重新attackLinkEffect方法获得新的技能效果
@@ -28,7 +29,7 @@ public class attackLink : MonoBehaviour {
 	public AudioClip audioWhenAct;//在做出动作的时候就发的音效
 	public AudioClip audioWhenAttack;//招式命中的时候的音效，修改的是player身上的音效
 
-	public bool isCrossFade= true;//是否立即播放动画，为有缓冲，但是有些动画不应该缓冲，此时设置为false即可
+	public crossFadeMode crossMode = crossFadeMode.play;
 	/****************************************特殊攻击方法组****************************************************/
 	//攻击检测原理：
 	//用相交求获取身边所有的单位
@@ -106,8 +107,9 @@ public class attackLink : MonoBehaviour {
 		//也就是说攻击动作之间不会发生生任何干扰
 		//此外频繁第取消后摇实际上会隐形消耗斗气，例如刚刚准备做一个消耗斗气的动作还没有动作就立刻做出下一个动作，那么这个斗气消耗是不会返还的
 		//对于上述方法暂时使用状态值来强支计算能否转换
-
-		if (string.IsNullOrEmpty (animationName) == false && systemValues .canInteruptActionInAttack ( this.thePlayer .theAnimationController) )
+		//  && systemValues .canInteruptActionInAttack ( this.thePlayer .theAnimationController)  ) 
+		//上面的检查方法被移动到了attackLinkController里面，在attackLink里面只管实现攻击效果，不再判断是否可以转移攻击效果（多次分时的检查可能会出现卡顿）
+		if (string.IsNullOrEmpty (animationName) == false )
 		{
 			thePlayer.theAudioPlayer.playAttackActSound (this.audioWhenAct);//播放攻击动作音效
 			if (thePlayer.ActerSp >= this.spUse)
@@ -116,6 +118,7 @@ public class attackLink : MonoBehaviour {
 			} 
 			else 
 			{
+				//法力透支的计算过程
 				float hpMinus = this.spUse - thePlayer.ActerSp;
 				thePlayer.ActerHp -= hpMinus*1.2f;
 				thePlayer.ActerSp = 0;
@@ -124,11 +127,31 @@ public class attackLink : MonoBehaviour {
 				//但是为了保证我的个性，透支机制依旧存在，只是不会致命了
 			}
 			thePlayer.OnUseSp (this.spUse);
-			if(isCrossFade)
-			this.theAnimatorOfPlayer.CrossFade (animationName, 0.1f);
-			else
-			this.theAnimatorOfPlayer.Play (animationName);
-			
+
+			switch( crossMode )
+			{
+			//平滑过渡
+			case crossFadeMode.crossfade :
+				{
+				     this.theAnimatorOfPlayer.CrossFade (animationName, 0.05f);
+				}
+				break;
+			//一般播放
+			case crossFadeMode.play :
+				{
+					this.theAnimatorOfPlayer.Play (animationName);
+				}
+				break;
+			//强制播放(不太推荐的做法)
+		    //其实强制播放也没用，在这上一层会有检查
+			case crossFadeMode.crossfadeFix :
+				{
+					this.theAnimatorOfPlayer.CrossFadeInFixedTime(animationName, 0.00f);
+				}
+				break;
+
+			}
+
 			thePlayer.extraDamageForAnimation = this.extraDamage;//用这样的方式修改真正的伤害
 			thePlayer .theAudioPlayer .audioNow = this.audioWhenAttack;//确定命中的时候的音效
 

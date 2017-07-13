@@ -34,8 +34,8 @@ public class systemValues : MonoBehaviour {
 	public static GameObject[] players;//获取游戏人物模型
 
 	//增加新人物的时候增加这里面的项目就可以了
-	//这些数组的内容是纵向对应的并且与Resources文件夹中资源内容相对应
-	public static string[] thePlayerNamesForPlay = { "theFighterAshe"  ,  "theFighterIce"};
+	//这些数组的内容是纵向对应的并且与Resources文件夹中资源内容相对应 
+	public static string[] thePlayerNamesForPlay = { "theFighterIce" , "theFighterAshe" };
 	private static string [] fighterInResourceNames = {"theFighterWukong","theFighterIce","theFighterdemon","theFighterknight","theFighterknife","theFighterAshe"};
 	public static string[] fighterPicInResourceNames = {"wukong","iceMonster","DEMON","knightHead","knifeHead","asheHead"};//获取头像名称用于显示
 	public static string[] fighterCharacterNames = {"孙悟空","冰原魔人","地狱恶魔","恶灵骑士","归海一刀","寒冰射手"};//获取头像名称用于显示
@@ -184,6 +184,8 @@ public class systemValues : MonoBehaviour {
 		}
 		return true;
 	}
+
+	//下面两个方法有嵌套使用
 	public static bool canChangeToNextAttack(Animator theAnimator)
 	{
 		//非攻击状态下的才可以转换，否则不行
@@ -191,7 +193,9 @@ public class systemValues : MonoBehaviour {
 		//因为分层，这里有一些内容已经需要有改变了，人物能够进入攻击动作的条件：
 		//层1处于moveMent状态，也就是没有异常状态例如beHit
 		//层2处于moveMent状态，也就是上一个攻击动作已经完成
-		if (theAnimator.GetCurrentAnimatorStateInfo (theNotAttackLayerIndex).IsName (canAttackStateInBasicLayer) && 
+
+		//有一些异常的状态（例如击倒）是没有办法攻击的
+		if (theAnimator.GetCurrentAnimatorStateInfo (theNotAttackLayerIndex).IsName (canAttackStateInBasicLayer)  && 
 			theAnimator.GetCurrentAnimatorStateInfo (theAttackLayerIndex).IsName (canAttackStateInBasicLayer)) //在层1中只有在移动状态下才可以进行着各种战斗动作
 		return  true;
 		

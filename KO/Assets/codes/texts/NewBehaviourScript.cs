@@ -4,8 +4,13 @@ using UnityEngine;
 
 public class NewBehaviourScript : MonoBehaviour {
 
-	public void make()
+	void Update ()
 	{
-		print ("ff");
+		if (Input.GetKeyDown (KeyCode.Space)) 
+		{
+			//this.GetComponentInChildren <Animator> ().StopPlayback ();
+			this.GetComponentInChildren <Animator> ().CrossFadeInFixedTime("punch1",0f);
+		}
+		
 	}
 }

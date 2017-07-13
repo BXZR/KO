@@ -290,7 +290,9 @@ public class PlayerBasic : MonoBehaviour {
 	public void OnAttack(PlayerBasic thePlayerAim ,float extraDamage = 0 ,bool isSimple =false,bool isExtraAttack = false)
 	{
 		//isExtraAttack表现为不用什么特殊动作直接造成伤害的条件
-		if (theAnimationController.canChangeToNextAttack() == false ||isExtraAttack) 
+		//在这里似乎多做了一次判断
+		//判断原因在于原先的攻击做法是连续的，而现在的攻击是离散的
+		if (theAnimationController.canChangeToNextAttack() == false || isExtraAttack) 
 		{
 			this.theAudioPlayer.playAttackSound ();//播放攻击音效
 			float damage = 0;

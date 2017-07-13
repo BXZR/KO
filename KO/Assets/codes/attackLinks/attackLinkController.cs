@@ -38,12 +38,13 @@ public class attackLinkController : MonoBehaviour {
 	public bool canControll = true ;//是否可以通过玩家/AI进行操作
 
 	//用于存储的内容容易存储在systemValue类
+	//这里做了额外的检查(动作检查统一到这个方法)
 	public bool canChangeToNextAttack()
 	{
 		 //在这里加上trycatch是为了保证一定会转换
 		try
 		{
-			return systemValues .canChangeToNextAttack(this.theAnimator);
+			return systemValues .canInteruptActionInAttack(this);
 		}
 		catch (Exception R)
 		{
@@ -159,6 +160,7 @@ public class attackLinkController : MonoBehaviour {
 		{
 			if (AL.attackLinkString.Length == index + 1 )//因为长度和index的关系，就比本的要求就是输入正确（当然还有SP等等的需求）
 			{
+				//这个判断非常的重要，如果取消，任何攻击动作都有可能中间取消，这当然不符合我们的需求
 				if(canChangeToNextAttack())
 				{
 				thePlayer.onPlayattackActions ();

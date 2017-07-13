@@ -42,7 +42,7 @@ public class state_SkillAttack  : stateBasic
 		theMoveController.moveAction (0,0);//虽然不移动，但是应该调用计算确保位置的正确
 
 		timer -= Time.deltaTime;
-		if (timer < 0  &&  theActionController .canChangeToNextAttack() && systemValues .canInteruptActionInAttack (theActionController)) 
+		if (timer < 0  &&  theActionController .canChangeToNextAttack()) 
 			//&&  theActionController .isAttacking()==false 这个判定条件统一放置到attackLinkController里面
 		{
 			//Debug.Log ("trueToattack!");

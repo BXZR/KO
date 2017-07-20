@@ -116,11 +116,12 @@ public class roundController : MonoBehaviour {
 		
 		for (int i = 0; i < systemValues . players.Length; i++) 
 		{
-			if (systemValues.players [i].GetComponent <PlayerBasic> ().isAlive == false)
-				systemValues.players [i].transform.position = new Vector3 (systemValues.players [i].transform.position.x,0.4f,systemValues.players [i].transform.position.z);
-			systemValues .players [i].GetComponentInChildren<attackLinkController> ().reStart ();
-			systemValues.players [i].GetComponentInChildren<attackLinkController> ().canControll = true;
-			systemValues.players [i].GetComponentInChildren<move> ().canMove = true;
+			PlayerBasic thePlayerToUse = systemValues.players [i].GetComponent <PlayerBasic> ();//引用保留，频繁获取毕竟伤效率
+			if ( thePlayerToUse .isAlive == false)
+				thePlayerToUse .transform.position = new Vector3 ( thePlayerToUse .transform.position.x,0.4f, thePlayerToUse .transform.position.z);
+			thePlayerToUse .GetComponentInChildren<attackLinkController> ().reStart ();
+			thePlayerToUse .GetComponentInChildren<attackLinkController> ().canControll = true;
+			thePlayerToUse .GetComponentInChildren<move> ().canMove = true;
 		}
 		roundNum++;
 		messageController.showMessage ("Round" + roundNum,false);//信息显示的时间已经被统一托管到信息显示控制器，也因此这里的显示机制需要调整
@@ -172,6 +173,24 @@ public class roundController : MonoBehaviour {
 	void Start () 
 	{
 		InvokeRepeating ("roundTimeShowUpdate",0f,1f);
+	}
+
+	//用于检查游戏中的特殊控制键位用
+	void Update () 
+	{
+		if (Input.GetKeyDown (KeyCode.Escape)) 
+		{
+			//systemValues.canAttack 顺带做了标记量
+			//这就意味着，没有开始战斗的时候没有办法结束游戏，在poss阶段不能够结束游戏
+			if(systemValues.canAttack)
+			{
+			systemValues.canAttack = false;
+			theOverPanel.gameObject.SetActive (true);
+			messageController.showMessage ("fight over",false);//信息显示的时间已经被统一托管到信息显示控制器，也因此这里的显示机制需要调整
+			theOverPanel.justOver ();//仅仅结束
+			}
+		}
+
 	}
  
 }

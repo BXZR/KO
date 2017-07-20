@@ -22,7 +22,7 @@ public class effectForIceKick :  effectBasic {
 	public override void Init ()
 	{
 		theEffectName = "碎裂之腿";
-		theEffectInformation ="击退目标0.5秒(目标无法自主移动)\n削减目标10%当前攻击力\n持续时间内目标受到的伤害提升3%\n最多持续"+this.lastingTime+"秒，攻击命中减少1秒时间";
+		theEffectInformation ="击退目标0.5秒(目标无法自主移动)\n削减目标10%当前攻击力\n持续时间内目标受到的伤害提升5%\n最多持续"+this.lastingTime+"秒，攻击命中减少1秒时间";
 		makeStart ();
 		damageMinus =thePlayer.ActerWuliDamage * damagePercent;
 		thePlayer.ActerWuliDamage -= damageMinus;
@@ -36,7 +36,7 @@ public class effectForIceKick :  effectBasic {
 		
 	public override void OnBeAttack (float damage)
 	{
-		float theDamege = damage * 0.03f * (1 - this.thePlayer.ActerWuliShield / 1500);
+		float theDamege = damage * 0.05f * (1 - this.thePlayer.ActerWuliShield / 1500);
 		this.thePlayer.ActerHp -= theDamege;
 		this.thePlayer.addDamageRead (theDamege);
 		this.lastingTime -= 1f;

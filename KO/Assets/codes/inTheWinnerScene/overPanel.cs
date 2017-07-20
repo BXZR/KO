@@ -14,6 +14,18 @@ public class overPanel : MonoBehaviour {
 		Invoke ("makeNextScene",timerWait);
 	}
 
+	//玩家按下esc键位结束战斗的时候用，用于跳转
+	public void justOver()
+	{
+		Destroy (theWinnerImmage.gameObject);//没有必要显示头像，仅仅需要一个跳转就可以
+		Destroy(this.GetComponentInChildren<Text>().gameObject);
+		Invoke("makeNextSceneSimple" , 1.5f);
+	}
+
+	void makeNextSceneSimple()
+	{
+		SceneManager.LoadScene ("Start");
+	}
 
 	void makeNextScene()
 	{

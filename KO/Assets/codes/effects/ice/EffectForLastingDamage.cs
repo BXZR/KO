@@ -22,7 +22,7 @@ public class EffectForLastingDamage : effectBasic {
 	public override void Init ()
 	{
 		theEffectName = "冰封之拳";
-		theEffectInformation ="减少目标"+ (movePercentMinus*100).ToString("f0") +"%移动速度\n每秒钟造成"+damage+"真实伤害\n最少持续"+allTimer+"秒，最多持续"+allTimerMax+"秒\n每一次连续触发增加"+timerAddPerUpdate+"秒持续时间";
+		theEffectInformation ="减少目标"+ (movePercentMinus*100).ToString("f0") +"%移动速度\n每秒钟造成最少"+damage+"真实伤害\n最少持续"+allTimer+"秒，最多持续"+allTimerMax+"秒\n连续触发增加"+timerAddPerUpdate+"秒持续时间和15%伤害";
 		makeStart ();
 		this.thePlayer.ActerMoveSpeedPercent -= movePercentMinus;
 	}
@@ -44,6 +44,7 @@ public class EffectForLastingDamage : effectBasic {
 
 	public override void effectDestory ()
 	{
+		
 		this.thePlayer.ActerMoveSpeedPercent += movePercentMinus;
 		if (this.thePlayer.ActerMoveSpeedPercent > 1)
 			this.thePlayer.ActerMoveSpeedPercent = 1;
@@ -58,7 +59,7 @@ public class EffectForLastingDamage : effectBasic {
 
 	override public  void updateEffect ()
 	{
-
+		damage *= 0.15f;//这一次连续触发还会增加伤害
 		allTimer += timerAddPerUpdate;
 		if(allTimer <= allTimerMax)
 			lastingTime += timerAddPerUpdate;

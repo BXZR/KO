@@ -215,6 +215,7 @@ public class attackLinkController : MonoBehaviour {
 
 	public void reStart()//击倒之后进入下一个回合
 	{
+		//更新生命上限不知道是不是好事
 		thePlayer.ActerHpMax = thePlayer.CActerHpMax;
 		thePlayer.ActerHp = thePlayer.ActerHpMax;
 		thePlayer.ActerSpMax = thePlayer.CActerSpMax;

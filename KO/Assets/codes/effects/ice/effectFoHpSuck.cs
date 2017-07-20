@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class effectFoHpSuck : effectBasic {
 	//攻击的吸血效果
-	public int hpSuck =3;//每一次发起攻击吸收的生命值
+	public int hpSuck =0;//每一次发起攻击吸收的生命值
 	public float hpSuckPercent = 0.10f;//攻击伤害的10%转化为生命
 
 	void Start () 
@@ -16,7 +16,8 @@ public class effectFoHpSuck : effectBasic {
 	public override void Init ()
 	{
 		theEffectName = "血之渴望";
-		theEffectInformation ="吸血效果增加("+hpSuck+"直接吸血+"+ hpSuckPercent*100+"%伤害吸血),"+"\n斗气消耗提升8%,额外伤害不计入吸血\n攻击随机削减1-2目标最大生命值";
+		//注意的是，最大生命值每回合都会更新的，这个最大生命值的削弱仅仅限制于本回合(如果削减最大斗气值就太变态了)
+		theEffectInformation ="吸血效果增加("+hpSuck+"直接吸血+"+ hpSuckPercent*100+"%伤害吸血),"+"\n斗气消耗提升6.5%,额外伤害不计入吸血\n攻击随机削减1-3目标最大生命值\n每损失1%生命直接吸血效率提升2%";
 		makeStart ();
 		this.thePlayer.ActerHpSuck += this.hpSuck;
 		this.thePlayer.CActerHpSuck += this.hpSuck;
@@ -32,12 +33,15 @@ public class effectFoHpSuck : effectBasic {
 
 	public override void OnAttack (PlayerBasic aim)
 	{
-		aim.ActerHpMax -= Random.value * 2f;
+		aim.ActerHpMax -= Random.value * 3f;
+		float thePercent = 1 - thePlayer.ActerHp / thePlayer.ActerHpMax;//损失生命百分比
+		float hpuper = this.hpSuck * thePercent *2;
+		thePlayer.ActerHp += hpuper;
 	}
 
 	public override void OnUseSP (float spUse = 0)
 	{
-		thePlayer.ActerSp -= spUse * 0.08f;
+		thePlayer.ActerSp -= spUse * 0.065f;
 	}
 
 

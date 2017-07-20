@@ -15,8 +15,8 @@ public class effectHuanGui :   effectBasic {
 	PlayerBasic theAim ;//保留目标引用
 
 	//第二次
-	float acterhpUp = 30;//直接回复的生命值
-
+	float acterhpUp = 20;//直接回复的生命值
+	float actershieldHp = 15;//获得的护盾值
 	//第三次
 	float damagePercent = 0.04f;//追加的斩杀效果伤害百分比
 
@@ -39,7 +39,7 @@ public class effectHuanGui :   effectBasic {
 		theEffectName = "阿鼻道三刀";
 		theEffectInformation ="在"+timerForLive+"秒内的三次攻击命中触发特效：\n";
 		theEffectInformation += "第一次，削减目标"+aimDamageMinus*100+"%的攻击力\n";
-		theEffectInformation += "第二次，恢复"+acterhpUp+"生命值\n";
+		theEffectInformation += "第二次，恢复"+acterhpUp+"生命值,获得"+actershieldHp+"护盾\n";
 		theEffectInformation += "第三次，造成目标"+damagePercent*100+"%已损生命的真实伤害";
 		makeStart ();
 		Destroy (this.GetComponent (this.GetType()),timerForLive);
@@ -70,8 +70,11 @@ public class effectHuanGui :   effectBasic {
 
 	void hpup()
 	{
-		if(this.thePlayer)
-		this.thePlayer .ActerHp += acterhpUp;
+		if (this.thePlayer) 
+		{
+			this.thePlayer.ActerHp += acterhpUp;
+			this.thePlayer.ActerShieldHp += actershieldHp;
+		}
 	}
 
 }

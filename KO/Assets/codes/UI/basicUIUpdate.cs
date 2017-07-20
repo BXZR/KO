@@ -8,6 +8,7 @@ public class basicUIUpdate : MonoBehaviour {
 	public PlayerBasic thePlayerToUpdate;//更新指定的游戏人物的信息，可以随意赋值
 
 	public Slider theHpSlider;//显示UI——生命值
+	public Slider theShieldHpSlider;//显示UI——护盾生命值
 	public Slider theSpSlider;//显示UI——能量值
 	public Image theHeadImage;//头像
 
@@ -18,6 +19,7 @@ public class basicUIUpdate : MonoBehaviour {
 
 	Color theHpColor;//当前显示的slider的颜色
 	float hpValue;//当前的生命值百分比，保留这个引用可以少一次计算
+	float shieldValue;//护盾生命值百分比
 
 	public string  thePlayerNamesResource = "";//获取到开始的ID，也就是预设物的名字，用这个查询头像名称
 	//虽然这样会花掉额外的开销，但是设置上会更统一简单
@@ -35,12 +37,14 @@ public class basicUIUpdate : MonoBehaviour {
 			//在这里更新中不得已大量使用了除法
 			hpValue  =  thePlayerToUpdate.ActerHp / thePlayerToUpdate.ActerHpMax;
 			theSpSlider.value = thePlayerToUpdate.ActerSp / thePlayerToUpdate.ActerSpMax;
+			shieldValue = thePlayerToUpdate.ActerShieldHp / thePlayerToUpdate.ActerHpMax;
 			/*
 			 *跟俊绑定的任务的当前生命值显示slider的图片颜色
 			 *参数给的是立即数，有空会继续调整
 			 *值得注意的是RGB的颜色必须使0-1的，而不是1-255
 			 *这个作为额外的功能可以注销掉
 			*/
+			theShieldHpSlider.value = shieldValue; 
 			theHpSlider.value = hpValue;
 			theHpColor.r = 1 - hpValue * 0.5f;
 			theHpColor.g = hpValue* 0.2f +0.8f ;

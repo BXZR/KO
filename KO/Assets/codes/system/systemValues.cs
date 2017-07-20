@@ -92,7 +92,7 @@ public class systemValues : MonoBehaviour {
 	//全局状态参数
 	//用枚举的方式而不是int标记是因为代码读者更容易看懂
 	//但说实话，如果只是用int 标记其效率当然会高一点
-	public static GameType theGameType = GameType.PVP;
+	public static GameType theGameType = GameType.PVP ;
 	//public static int theGameMode = 0;
 	//PVP people vs people
 	//pvc people vs computer

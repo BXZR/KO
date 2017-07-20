@@ -6,7 +6,7 @@ public class EffectHanBing :effectBasic
 {
 
 	private float lastingTime = 2f;//下过持续时间
-	private float extraPercentDamage = 0.15f;//额外伤害百分比
+	private float extraPercentDamage = 0.20f;//额外伤害百分比
 	private float movePercentMinus = 0.10f;//额外减速
 	private bool attacked= false;//是否已经增加了额外伤害
 	void Start () 

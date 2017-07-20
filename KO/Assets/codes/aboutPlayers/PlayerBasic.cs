@@ -60,6 +60,8 @@ public class PlayerBasic : MonoBehaviour {
 
 	public float ActerMoveSpeedPercent = 1f;//移动速度百分比，在移动的时候会有这个速度百分比加成
 
+	public float ActerShieldHp = 0;//护盾的生命值
+
 	//接下来是一些私有的战斗属性备份，用于计算值（作为例如护甲值提升10%这种的参数值计算）
 	//因为是私有方法，所以还要给出获取这个值和修改这个值的方法
 	//总体上讲，这些值是战斗属性的备份值，当有特殊计算方法的时候作为参数计算更新战斗属性
@@ -101,6 +103,8 @@ public class PlayerBasic : MonoBehaviour {
 
 	[HideInInspector]//为了保证设定面板的简洁，暂时隐藏之
 	public  float extraDamageForAnimation = 0;//设置为共有是为了传参数的时候方便，但是这个参数是不能够被主动在面板上设定的
+
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////	
 //下面是游戏计算中的临时变量
 	[HideInInspector]//为了保证设定面板的简洁，暂时隐藏之
@@ -372,6 +376,18 @@ public class PlayerBasic : MonoBehaviour {
 				return;//如果处于一些特殊状态下，无视攻击
 				
 			DamageRead += damage;//累计伤害
+
+			//如果护盾比较厚，就吸收所有的伤害
+			if (ActerShieldHp > damage)
+			{
+				ActerShieldHp -= damage;
+				damage = 0;
+			} 
+			else//如果护盾不够厚，护盾消失
+			{
+				damage -= ActerShieldHp;
+				ActerShieldHp = 0;
+			}
 			this.ActerHp -= damage;
 			effects = this.GetComponentsInChildren<effectBasic> ();
 			for (int i = 0; i < effects.Length; i++)

@@ -7,6 +7,7 @@ public class basicUIUpdate : MonoBehaviour {
 
 	public PlayerBasic thePlayerToUpdate;//更新指定的游戏人物的信息，可以随意赋值
 
+	public Slider theHpBackSlider;//插值显示失血的slider
 	public Slider theHpSlider;//显示UI——生命值
 	public Slider theShieldHpSlider;//显示UI——护盾生命值
 	public Slider theSpSlider;//显示UI——能量值
@@ -49,7 +50,22 @@ public class basicUIUpdate : MonoBehaviour {
 			theHpColor.r = 1 - hpValue * 0.5f;
 			theHpColor.g = hpValue* 0.2f +0.8f ;
 			theHpFullImage.color = theHpColor;
+			makeLoseShow ();
 
+		}
+	}
+
+	private void makeLoseShow()
+	{
+		//插值法计算失血
+		//并且，只有在失血的时候才会生效
+		//其中0.4是插值的速度
+		if (theHpBackSlider) 
+		{
+			if (theHpBackSlider.value > theHpSlider.value)
+				theHpBackSlider.value = Mathf.Lerp (theHpBackSlider.value, theHpSlider.value, 0.4f);
+			else
+				theHpBackSlider.value = theHpSlider.value;
 		}
 	}
 

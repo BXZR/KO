@@ -35,7 +35,7 @@ public class systemValues : MonoBehaviour {
 
 	//增加新人物的时候增加这里面的项目就可以了
 	//这些数组的内容是纵向对应的并且与Resources文件夹中资源内容相对应 
-	public static string[] thePlayerNamesForPlay = { "theFighterIce" , "theFighterdemon" };
+	public static string[] thePlayerNamesForPlay = { "theFighterIce" , "theFighterIce" };
 	private static string [] fighterInResourceNames = {"theFighterWukong","theFighterIce","theFighterdemon","theFighterknight","theFighterknife","theFighterAshe"};
 	public static string[] fighterPicInResourceNames = {"wukong","iceMonster","DEMON","knightHead","knifeHead","asheHead"};//获取头像名称用于显示
 	public static string[] fighterCharacterNames = {"孙悟空","冰原魔人","地狱恶魔","恶灵骑士","归海一刀","寒冰射手"};//获取头像名称用于显示
@@ -78,7 +78,7 @@ public class systemValues : MonoBehaviour {
 	//所有非update托管的更新都需要依靠这个参数
 	//这样可以在降低实时性的条件下大幅减少计算
 	//以0.2为例，每秒钟只计算5次，这在较高的FPS游戏中减少的计算量是很大的
-	public static float updateTimeWait = 0.2f;
+	public static float updateTimeWait = 0.1f;
 	//胜利制度
 	public static int winCount= 2;//三局两胜制度
 	//这个胜利次数有范围，只可能是1（一局胜利）、2（三局两胜）、3（五局三胜）

@@ -63,9 +63,10 @@ public class gameStarter : MonoBehaviour {
 
 			//这只是一个简单的着色方法，但是这个方法效率实在是很低下而且效果一般
 			//这个方法暂时先放在这里表示一种思路，如果有缘，或许会有更好的方法修改
+		   
 			/*
 			string acterName = thePlayers [0].ActerName;
-			for (int i = 1; i < thePlayerNames.Length; i++) 
+			for (int i = 1; i < systemValues .thePlayerNamesForPlay .Length; i++) 
 			{
 				if (thePlayers [i].ActerName == acterName) 
 				{
@@ -79,7 +80,7 @@ public class gameStarter : MonoBehaviour {
 					}
 				}
 			}
-			*/
+		    */
 			//千万注意的就是游戏人物的playerIndex是一个非常重要的选项
 			//0代表由游戏控制手柄组1进行控制
 			//1代表由游戏控制手柄2或者游戏AI进行控制

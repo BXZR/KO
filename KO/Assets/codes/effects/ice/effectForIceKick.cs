@@ -50,6 +50,7 @@ public class effectForIceKick :  effectBasic {
 		if( theEffect)
 			Destroy (theEffect .gameObject);
 		CancelInvoke ();
+		//thePlayer.GetComponent<move> ().canMove = true;
 	}
 
 	void OnDestroy()

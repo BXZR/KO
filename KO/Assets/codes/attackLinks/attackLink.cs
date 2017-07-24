@@ -28,8 +28,10 @@ public class attackLink : MonoBehaviour {
 
 	public AudioClip audioWhenAct;//在做出动作的时候就发的音效
 	public AudioClip audioWhenAttack;//招式命中的时候的音效，修改的是player身上的音效
-
+	//动作切换的方式
 	public crossFadeMode crossMode = crossFadeMode.play;
+	//[HideInInspector]//此效果没有必要在面板中被设置
+	public int AIExtraValue = 0;//用于AI计算的额外参数
 	/****************************************特殊攻击方法组****************************************************/
 	//攻击检测原理：
 	//用相交求获取身边所有的单位

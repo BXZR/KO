@@ -52,6 +52,13 @@ public class effectBasic : MonoBehaviour {
 			theInformation +="\n[主动]";
 		return theInformation;
 	}
+
+	//特殊用途不被认为是技能
+	virtual public bool isExtraUse()
+	{
+		return false;
+	}
+
 	//一般都是主动技能，此处为默认为false
 	virtual public bool isBE()
 	{

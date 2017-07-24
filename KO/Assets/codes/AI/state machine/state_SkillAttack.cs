@@ -47,7 +47,8 @@ public class state_SkillAttack  : stateBasic
 		{
 			//Debug.Log ("trueToattack!");
 			timer = systemValues .theAIActionThinkTime;
-			string theLink = this.getAttackLinkString (this.theActionController,this .thePlayer);
+			//string theLink = this.getAttackLinkString (this.theActionController,this .thePlayer);
+			string theLink = this.getAttackLinkString2 (this.theActionController,this .thePlayer);//伪，基于增强学习概念的方法
 			theActionController.makeAttackLink(theLink,false);//这里是需要进行决策的地方
 		}
 	}

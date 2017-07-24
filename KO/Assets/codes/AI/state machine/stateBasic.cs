@@ -116,4 +116,50 @@ public class stateBasic
 		//Debug.Log (thePlayer .ActerName +"--"+stringToReturn);
 		return stringToReturn;
 	}
+
+
+	//方法二，基于方法一加上动态评价的AI技能选择方法
+	//连招效果脚本在这里算作额外的攻击力
+
+	public string getAttackLinkString2(attackLinkController theAttackLinkController,PlayerBasic thePlayer)
+	{
+		string stringToReturn = "";
+		float value = -9998;
+		attackLink theLinkNow;
+		float theValueToCheckUp = 0;//分子
+		float theValueToCheckDown = 2;//分母
+		float theValueToCheck = 0;//分子分母计算结果
+		for (int i = 0; i < theAttackLinkController.attackLinks.Length; i++) 
+		{
+			if (theAttackLinkController.attackLinks [i].spUse > 5) //不耗蓝或者耗蓝超级低的都不算战斗技能，只是普攻与加权
+			{
+				theValueToCheckUp = 0;//分子
+				theValueToCheckDown = 0;//分母
+				theValueToCheck = 0;//分子分母计算结果
+
+				theLinkNow = theAttackLinkController.attackLinks [i];
+				//弱化之前的固定判断方法，保留但是取消随机
+				if (string.IsNullOrEmpty (theLinkNow.conNameToEMY) == false)
+					theValueToCheckUp += 5;//脚本级别的加权值有待界定
+				if (string.IsNullOrEmpty (theLinkNow.conNameToSELF) == false)
+					theValueToCheckUp += 12;//能给自己补充状态的优先
+				
+				theValueToCheckUp += theLinkNow.extraDamage/5;//攻击力比较高的优先
+				theValueToCheckUp += (thePlayer .ActerSp - theLinkNow.spUse) /5;//用完剩余法力比较高的优先
+
+				theValueToCheckUp += theLinkNow.AIExtraValue;//学习过来的判定标准
+
+				theValueToCheck = theValueToCheckUp;//因为暂且没有分母
+				if (value < theValueToCheck) 
+				{
+					value = theValueToCheck;
+					stringToReturn = theLinkNow.attackLinkString;
+				}
+			}
+
+		}
+		//Debug.Log (thePlayer .ActerName +"--"+stringToReturn);
+		return stringToReturn;
+	}
+
 }

@@ -158,6 +158,9 @@ public class selectSceenController : MonoBehaviour
 			int indexFotAttackLink= 0;
 			for (int i = 0; i <  effectsPE .Length; i++)
 		{
+				//有些特殊的effect脚本是为了系统内部调用便利才继承这个类，并不算是真实的技能
+				if(effectsPE [i].isExtraUse ())
+					continue;
 				effectsPE [i].Init ();
 				string head = "";
 			/*************************进行染色************************************************/

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class attackLinkController : MonoBehaviour {
+public class attackLinkController : effectBasic {
 
 	private int index = 0;//当前全局搜索位置
 	public attackLink[] attackLinks;//保存连招公式的数组
@@ -29,7 +29,9 @@ public class attackLinkController : MonoBehaviour {
 	public string dropAnimatorName ="drop";//跌倒动画状态名称(这个名字做成默认名字因为没有必要分化)
 	[HideInInspector]//为了保证设定面板的简洁，暂时隐藏之
 	public string beHitAnimatorName ="beHit";//跌倒动画状态名称(这个名字做成默认名字因为没有必要分化)
-
+	[HideInInspector]//为了保证设定面板的简洁，暂时隐藏之
+	public attackLink theAttackLinkNow = null;//当前选中的attackLink
+	//上面这个字段用于AI对这个attackLink的值的重新学习，同时这个也是信息采集需要使用的引用
 
 	//public string basicPunchKey = "J";//基础的拳头按键
 	//public string basicKickKey = "K";//基础的踢腿按键
@@ -156,6 +158,7 @@ public class attackLinkController : MonoBehaviour {
 	void check()//真正进行检测的方法
 	{
 		bool isOver = false;//标记量
+		theAttackLinkNow = null;//每次检查之前都需要清空引用
 		foreach(attackLink AL in attackLinkMayUsing)
 		{
 			if (AL.attackLinkString.Length == index + 1 )//因为长度和index的关系，就比本的要求就是输入正确（当然还有SP等等的需求）
@@ -164,6 +167,14 @@ public class attackLinkController : MonoBehaviour {
 				if(canChangeToNextAttack())
 				{
 				thePlayer.onPlayattackActions ();
+				
+			    //如果游戏人物是AI才会做下面的操作，玩家来玩没必要使用
+				if(thePlayer .GetComponent<AI_stage>())
+				{
+				 theAttackLinkNow = AL;//记录当前选中的AL
+				 Invoke("attackLinkNowFlash",1f);
+				}
+
 				AL.attackLinkEffect ();//发生效果
 				flashLink ();//更新列表
 				reMake();//完全重头开始
@@ -254,6 +265,40 @@ public class attackLinkController : MonoBehaviour {
 	public void playFaint()//被击中
 	{
 		theAnimator.CrossFade (beHitAnimatorName ,0.25f);
+	}
+
+
+//---------------------------------------------AI使用------------------------------------------------------------//
+
+	//这个脚本的对应方法仍然被调用，但是在信息中不被视为是一个技能
+	public override bool isExtraUse ()
+	{
+		return true;
+	}
+
+	//如果使用这个连招link命中了，说明这个link还算是有点用
+	public override void OnAttack (PlayerBasic aim, float TrueDamage)
+	{
+		 
+		if (theAttackLinkNow != null) 
+		{
+			//下面是这个连招的基础计分方式
+			//修改linl的AIExtraValue属性值
+			theAttackLinkNow.AIExtraValue += (int)TrueDamage / 10;//根据造成的伤害处理
+			theAttackLinkNow .AIExtraValue += UnityEngine.Random .Range(-5,5);//让分数始终被打压的招式有翻身之处
+			theAttackLinkNow = null;
+		}
+	}
+
+	//为了AI而计算用于评判的value数值
+	private void attackLinkNowFlash()
+	{
+		//如果在规定的时间之内打出伤害，就认为这个方法的实际效果并不是很好，所以需要扣分，以后避免使用之
+		if (theAttackLinkNow != null) 
+		{
+			theAttackLinkNow.AIExtraValue -= (15- (int)theAttackLinkNow.extraDamage /7);//扣分
+			theAttackLinkNow = null;
+		}
 	}
     ///////////////////////////////////////////////////////////////////////////////////////////////以下是真正的调用方法入口
 

@@ -312,6 +312,7 @@ public class PlayerBasic : MonoBehaviour {
 			{
 				effects [i].OnAttack ();
 				effects [i].OnAttack (thePlayerAim);
+				effects [i].OnAttack (thePlayerAim,damage);
 			}
 			extraDamageForAnimation = 0;
 		}

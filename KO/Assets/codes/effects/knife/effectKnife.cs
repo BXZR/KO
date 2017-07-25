@@ -33,7 +33,7 @@ public class effectKnife :  effectBasic {
 	public override void Init ()
 	{
 		theEffectName = "霸刀";
-		theEffectInformation ="每第"+countMax+"次攻击造成两次伤害并回复"+spup+"斗气值\n此外，此人享有额外"+baojiPercent*100+"%的暴力几率和"+baojiDamageAdd*100+"%的暴击伤害";
+		theEffectInformation ="每第"+countMax+"次攻击造成两次伤害并回复"+spup+"斗气\n(两次伤害独立计算暴击并触发普攻特效)\n此外，此人享有额外"+baojiPercent*100+"%的暴击几率和"+baojiDamageAdd*100+"%的暴击伤害";
 		makeStart ();
 		thePlayer.ActerSuperBaldePercent += baojiPercent;
 		thePlayer.CActerSuperBaldePercent += baojiPercent;
@@ -62,6 +62,7 @@ public class effectKnife :  effectBasic {
 		}
 		if (count >= countMax) 
 		{
+			//用count做防止递归的gate
 			count = 0;
 			this.thePlayer.OnAttack (aim);
 			this.thePlayer.ActerSp += spup;//恢复斗气

@@ -303,7 +303,7 @@ public class move : MonoBehaviour {
 	public void beMakeForward(float speed)//效果移动（前进）
 	{
 		Vector3 moveDirectionAction = this.transform .forward *1f *speed *Time .deltaTime ;//旋转角度加权
-		if (theController && theController.enabled)//有时候需要强制无法移动
+		if (theController )//有时候需要强制无法移动
 			theController.Move (moveDirectionAction);//真实地进行行动(因为使用的是characterController，因此使用坐标的方式似乎比较稳妥)
 	}
 

@@ -13,6 +13,10 @@ public class effectForIceKick :  effectBasic {
 	float kickTimer = 0.5f;//被踢击退的时间
 	float kickSpeed = 1.9f;//被击退的速度
 
+
+	float damageSave = 0;//存储的伤害
+	float damageSavePercentMake = 0.25f;//结束的时候的第二段伤害百分比
+
 	void Start () 
 	{
 
@@ -22,7 +26,7 @@ public class effectForIceKick :  effectBasic {
 	public override void Init ()
 	{
 		theEffectName = "碎裂之腿";
-		theEffectInformation ="击退目标0.5秒(目标无法自主移动)\n削减目标10%当前攻击力\n持续时间内目标受到的伤害提升5%\n最多持续"+this.lastingTime+"秒，攻击命中减少1秒时间";
+		theEffectInformation ="击退目标"+kickTimer+"秒，并削减其10%攻击力\n持续时间内储存目标受到的伤害\n效果结束时造成总储存量"+damageSavePercentMake*100+"%真实伤害\n最多持续"+this.lastingTime+"秒，攻击命中减少1秒时间";
 		makeStart ();
 		damageMinus =thePlayer.ActerWuliDamage * damagePercent;
 		thePlayer.ActerWuliDamage -= damageMinus;
@@ -33,14 +37,14 @@ public class effectForIceKick :  effectBasic {
 		theEffect.transform.position =new Vector3( thePlayer.transform.position.x,thePlayer .transform .position .y +0.1f,thePlayer.transform .position .z) ;
 		thePlayer.GetComponent<move> ().canMove = false;
 	}
-		
+
+	 
+
+
 	public override void OnBeAttack (float damage)
 	{
-		float theDamege = damage * 0.05f * (1 - this.thePlayer.ActerWuliShield / 1500);
-		this.thePlayer.ActerHp -= theDamege;
-		this.thePlayer.addDamageRead (theDamege);
+		damageSave += damage;
 		this.lastingTime -= 1f;
-
 	}
 
 	public override void effectDestory ()
@@ -55,13 +59,20 @@ public class effectForIceKick :  effectBasic {
 
 	void OnDestroy()
 	{
+		
+		float damage =  damageSave * damageSavePercentMake;
+		print ("kick -- "+ damageSave * damageSavePercentMake);
+		thePlayer.ActerHp -= damage;
+
 		effectDestory ();
+		thePlayer.GetComponent<move> ().canMove = true;
 	}
 
 
  
 	public override void updateEffect ()
 	{
+		//这个技能的击退效果可以连续触发，但是伤害提升的效果不能
 		kickTimer = 0.5f;
 		thePlayer.GetComponent<move> ().canMove = false;
 	}

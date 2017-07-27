@@ -9,17 +9,15 @@ public class magicArrow :  effectBasic {
   
 	//魔法水晶箭
 	float lastingTime = 2.5f;//眩晕时间
+	//这个眩晕的时间是jiyun脚本里面设定的，现在还不知道有什么好办法联系这二者
 	GameObject Arrow;//弹矢引用保存
 	Vector3 forward;
 	float arrowLife = 7f;// 弹矢生存时间
 	float arrowLifeupdate = 0.3f;// 弹矢生存时间
 	float coolingTime = 13f;//冷却时间
 	GameObject theArrow ;//真正的弹矢
-	private bool  yun =false;//是否已经使用了击晕
 
-	public static jiyun jiyunSave;//保留引用
-	float damageLater = 60;
-
+	float spMinus = 20f;//攻击额外削减斗气
 	void Start () 
 	{
 		Init ();//进行初始化
@@ -30,7 +28,7 @@ public class magicArrow :  effectBasic {
 	public override void Init ()
 	{
 		theEffectName = "魔法水晶箭";
-		theEffectInformation ="发射水晶箭冰冻目标"+lastingTime+"秒\n冰冻期间再次使用可造成"+damageLater+"后续伤害\n这个技能每"+coolingTime+"秒仅可以使用一次\n冷却中使用将转化为普通射击";
+		theEffectInformation ="发射可目标"+lastingTime+"秒的魔法水晶箭\n期间目标受到攻击消耗减少"+spMinus+"斗气\n这个技能每"+coolingTime+"秒仅可以使用一次\n冷却中使用将转化为普通射击";
 		makeStart ();
 		forward = this.thePlayer.transform.forward.normalized;
 		Arrow = (GameObject)  Resources.Load ("effects/aShe_Arrow_Magic");
@@ -42,6 +40,15 @@ public class magicArrow :  effectBasic {
 		theArrow.transform .position = positionNew;
 		theArrow.transform.localScale *= thePlayer.transform.localScale.y;
 		theArrow.transform.forward = thePlayer.transform.forward;
+		//添加额外的击晕特效(算是比较动态的方法了)
+		//-------------------------------------------
+		theArrow .gameObject .AddComponent<extraEffectMaker>();
+		extraEffectMaker theMaker = theArrow.gameObject.GetComponent <extraEffectMaker> ();
+		theMaker.thePlayer = this.thePlayer;
+		theMaker.theEffectName = "jiyun";
+		theMaker.theEffectTimer = this.lastingTime;
+		//------------------------------------------
+
 		if (SceneManager.GetActiveScene ().name == systemValues .theFightSceneName) 
 		{
 			Destroy (theArrow, arrowLife);
@@ -81,12 +88,6 @@ public class magicArrow :  effectBasic {
 	public override void updateEffect ()
 	{
 
-		if (jiyunSave != null) 
-		{
-			jiyunSave.GetComponent <PlayerBasic> ().ActerHp -= damageLater;
-			Destroy (jiyunSave);
-		}
-
 		forward = this.thePlayer.transform.forward;
 		Arrow = (GameObject)  Resources.Load ("effects/aShe_Arrow");
 		/////////
@@ -104,14 +105,7 @@ public class magicArrow :  effectBasic {
 
     public override void OnAttack (PlayerBasic aim)
 	{
-		if (yun== false)
-		{
-			if (!aim.GetComponent <jiyun> ())
-				aim.gameObject.AddComponent <jiyun> ();
-			aim.GetComponent <jiyun> ().lastingTime = this.lastingTime;
-			if (jiyunSave == null)
-				jiyunSave = aim.GetComponent <jiyun> ();
-			yun = true;
-		}
+		if (aim.GetComponent <jiyun> ())
+			aim.ActerSp -= spMinus;
 	}
 }

@@ -118,9 +118,9 @@ public class PlayerBasic : MonoBehaviour {
 
 	[HideInInspector]//为了保证设定面板的简洁，暂时隐藏之
 	public attackLinkController theAnimationController;
-	[HideInInspector]//为了保证设定面板的简洁，暂时隐藏之
+	//[HideInInspector]//为了保证设定面板的简洁，暂时隐藏之
 	public string conNameToEMY ;//用于记录连招给出的额外buff
-	[HideInInspector]//为了保证设定面板的简洁，暂时隐藏之
+	//[HideInInspector]//为了保证设定面板的简洁，暂时隐藏之
 	public string conNameToSELF;//用于记录连招给出的额外buff
 	private float conNameCoolingTime = 0.2f;//如果这个特效脚本在1.5秒内还没有被使用，就认为无效
 	//（否则准备一个脚本招式，然后等半天莫名其妙生效了不是好事）

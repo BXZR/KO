@@ -7,6 +7,7 @@ public class extraWeapon : MonoBehaviour {
 	private PlayerBasic thePlayer;//引用保存，各种信息调用
 	private bool canMakeDamage = true;
 
+
 	public void setPlayer(PlayerBasic thePlayerIn)
 	{
 		thePlayer = thePlayerIn;
@@ -14,6 +15,7 @@ public class extraWeapon : MonoBehaviour {
 		
 	private void extraDamageEffect(PlayerBasic playerAim)//额外添加挂在的计算脚本
 	{
+		
 		if (string.IsNullOrEmpty (thePlayer . conNameToEMY) == false)//效果不可叠加
 		{
 			if(!playerAim.gameObject.GetComponent (System.Type.GetType (thePlayer . conNameToEMY)))
@@ -21,6 +23,7 @@ public class extraWeapon : MonoBehaviour {
 				try
 				{
 					playerAim.gameObject.AddComponent (System.Type.GetType (thePlayer . conNameToEMY) );
+					print("makeEffect3");
 				}
 				catch
 				{

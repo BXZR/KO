@@ -52,6 +52,7 @@ public class playerWeapon : MonoBehaviour
 					try
 					{
 					  playerAim.gameObject.AddComponent (System.Type.GetType (thePlayer . conNameToEMY) );
+					  //print("makeEffect2");
 					}
 					catch
 					{

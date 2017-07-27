@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class jiyun  :  effectBasic {
 	//攻击的吸血效果
-	public float lastingTime = 9f;//下过持续时间
 	private GameObject theEffect;//因为没有重复使用。所以只是用一个引用不保留预设物的引用了
 	private Animator thePlayerOfBeHit;//动画控制器引用保留，因为要调用多次
 	float animatorSpeedMinus = 0.99f;//动画速度减少
@@ -21,7 +20,7 @@ public class jiyun  :  effectBasic {
 		makeStart ();
 		thePlayer.GetComponent<move> ().canMove = false;
 		thePlayer.GetComponent <attackLinkController> ().canControll = false;
-		Destroy (this.gameObject .GetComponent (this .GetType()),lastingTime);
+		Destroy (this.gameObject .GetComponent (this .GetType()),extraTimer);//这是一个extraEffectMaker提供的，最好是用extraTimer，动态修改时间
 		//下面是一个小的效果
 		theEffect = GameObject.Instantiate ((GameObject)Resources.Load ("effects/jiyun"));
 		theEffect.transform.parent = thePlayer.transform;

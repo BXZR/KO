@@ -16,7 +16,7 @@ public class newMethodAttack : MonoBehaviour {
 
 	private void extraEffectSELF()
 	{
-		if (string.IsNullOrEmpty (thePlayer . conNameToSELF) == false ) //效果不可叠加
+		if (string.IsNullOrEmpty (thePlayer . conNameToSELF) == false) //效果不可叠加
 		{
 			if (!thePlayer.gameObject.GetComponent (System.Type.GetType (thePlayer . conNameToSELF))) {
 				try
@@ -52,6 +52,7 @@ public class newMethodAttack : MonoBehaviour {
 				try
 				{
 					playerAim.gameObject.AddComponent (System.Type.GetType (thePlayer . conNameToEMY) );
+					//print("makeEffect");
 				}
 				catch(Exception E)
 				{

@@ -30,6 +30,8 @@ public class effectBasic : MonoBehaviour {
 	public virtual void effectDestoryExtra(){}//手动调用的额外销毁方法
 	public virtual void makeInformation(){}
 	//返回这个效果的信息
+
+	public float extraTimer = 0;//这个是给extraEffectMaker提供的时间
 	public  virtual  string getInformation ()
 	{
 		string theInformation = "（" + this.theEffectName + "）";

@@ -5,7 +5,7 @@ using UnityEngine;
 public class effectForIceKick :  effectBasic {
 	//攻击的吸血效果
 	public float lastingTime = 9f;//下过持续时间
-	float damagePercent = 0.10f;//削减的攻击力百分比
+	float damagePercent = 0.20f;//削减的攻击力百分比
 	float damageMinus; 
 	private GameObject theEffectP;//效果引用保存
 	private GameObject theEffect;//效果引用保存

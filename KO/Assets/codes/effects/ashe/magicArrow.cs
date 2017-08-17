@@ -16,8 +16,7 @@ public class magicArrow :  effectBasic {
 	float arrowLifeupdate = 0.3f;// 弹矢生存时间
 	float coolingTime = 13f;//冷却时间
 	GameObject theArrow ;//真正的弹矢
-
-	float spMinus = 20f;//攻击额外削减斗气
+ 
 	void Start () 
 	{
 		Init ();//进行初始化
@@ -28,7 +27,7 @@ public class magicArrow :  effectBasic {
 	public override void Init ()
 	{
 		theEffectName = "魔法水晶箭";
-		theEffectInformation ="发射可目标"+lastingTime+"秒的魔法水晶箭\n期间目标受到攻击消耗减少"+spMinus+"斗气\n这个技能每"+coolingTime+"秒仅可以使用一次\n冷却中使用将转化为普通射击";
+		theEffectInformation ="发射可击晕目标"+lastingTime+"秒的魔法水晶箭\n使任何伤害追加1%最大生命值真实伤害\n这个技能每"+coolingTime+"秒仅可以使用一次\n冷却中使用将转化为普通射击";
 		makeStart ();
 		forward = this.thePlayer.transform.forward.normalized;
 		Arrow = (GameObject)  Resources.Load ("effects/aShe_Arrow_Magic");
@@ -106,6 +105,6 @@ public class magicArrow :  effectBasic {
     public override void OnAttack (PlayerBasic aim)
 	{
 		if (aim.GetComponent <jiyun> ())
-			aim.ActerSp -= spMinus;
+			aim.ActerHp -= aim.ActerHpMax * 0.01f;
 	}
 }

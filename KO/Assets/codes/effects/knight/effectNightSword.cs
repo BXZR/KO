@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class effectNightSword  : effectBasic {
  
-	float lastingTime = 7f;
+	float lastingTime = 8f;
 	int count =0;
 	int countMax =3;
-	float damageMinus = 0.55f;//目标减少的输出百分比
+	float damageMinus = 0.35f;//目标减少的输出百分比
 	float hpDamgePercent = 0.02f;//最大生命值2%真实伤害
 
 

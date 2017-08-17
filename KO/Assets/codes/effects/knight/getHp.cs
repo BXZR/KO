@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class getHp: effectBasic {
 
-	float lastingTime = 5f;
+	float lastingTime = 4f;
  
 
 	void Start () 
@@ -22,7 +22,7 @@ public class getHp: effectBasic {
 		float theValue = this.thePlayer.ActerHp / this.thePlayer.ActerHpMax;
 		if (this.thePlayer &&  theValue<= 0.8f)
 		{
-			thePlayer.ActerHp += (1-theValue) * thePlayer.ActerHpMax *0.08f;
+			thePlayer.ActerHp += (1-theValue) * thePlayer.ActerHpMax *0.09f;
 		}
 		else
 			lastingTime = -999;

@@ -41,6 +41,12 @@ public class magicArrow :  effectBasic {
 		Vector3 emyPosition = systemValues.getEMY (this.thePlayer.transform).transform.position;
 		Vector3 theMoveForward = (emyPosition - this.thePlayer.transform.position).normalized;   
 		theArrow.transform.LookAt (emyPosition+new Vector3 (0,1,0) );
+		//艾希的箭矢有一个扇形的射击范围，超过这个范围箭矢就不会射中的
+		if (theMoveForward.z * thePlayer.transform.forward.z < 0)
+			theMoveForward = thePlayer.transform.forward;
+		else
+			theMoveForward = new Vector3 (theMoveForward.x, Mathf.Clamp (theMoveForward.y, -0.25f, 0.25f),theMoveForward .z);
+		
 		theArrow.transform .forward   = theMoveForward;
 		//添加额外的击晕特效(算是比较动态的方法了)
 		//-------------------------------------------
@@ -103,6 +109,12 @@ public class magicArrow :  effectBasic {
 		Vector3 emyPosition = systemValues.getEMY (this.thePlayer.transform).transform.position;
 		Vector3 theMoveForward = (emyPosition - this.thePlayer.transform.position).normalized;   
 		theArrow.transform.LookAt (emyPosition+new Vector3 (0,1,0) );
+		//艾希的箭矢有一个扇形的射击范围，超过这个范围箭矢就不会射中的
+		if (theMoveForward.z * thePlayer.transform.forward.z < 0)
+			theMoveForward = thePlayer.transform.forward;
+		else
+			theMoveForward = new Vector3 (theMoveForward.x, Mathf.Clamp (theMoveForward.y, -0.25f, 0.25f),theMoveForward .z);
+		
 		theArrow.transform .forward   = theMoveForward;
 
 		Destroy (theArrow,arrowLifeupdate);

@@ -61,7 +61,11 @@ public class attackSpeedUp :  effectBasic {
 		Vector3 positionNew = thePlayer.transform.position + new Vector3 (0,0.8f*thePlayer .transform .localScale .y , forward .normalized.z*0.1f) ;
 		theArrow.transform.localScale *= thePlayer.transform.localScale.y;
 		theArrow.transform.position = positionNew  ;
-		theArrow.transform.forward = thePlayer.transform.forward;
+
+		Vector3 emyPosition = systemValues.getEMY (this.thePlayer.transform).transform.position;
+		Vector3 theMoveForward = (emyPosition - this.thePlayer.transform.position).normalized;   
+		theArrow.transform.LookAt (emyPosition+new Vector3 (0,1,0) );
+		theArrow.transform .forward   = theMoveForward;
 
 		Destroy (theArrow,arrowLife);
 	}

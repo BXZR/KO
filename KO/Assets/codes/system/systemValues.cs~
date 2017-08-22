@@ -35,7 +35,7 @@ public class systemValues : MonoBehaviour {
 
 	//增加新人物的时候增加这里面的项目就可以了
 	//这些数组的内容是纵向对应的并且与Resources文件夹中资源内容相对应 
-	public static string[] thePlayerNamesForPlay = { "theFighterknife","theFighterIce"     };
+	public static string[] thePlayerNamesForPlay = { "theFighterAshe","theFighterIce"     };
 	private static string [] fighterInResourceNames = {"theFighterWukong","theFighterIce","theFighterdemon","theFighterknight","theFighterknife","theFighterAshe"};
 	public static string[] fighterPicInResourceNames = {"wukong","iceMonster","DEMON","knightHead","knifeHead","asheHead"};//获取头像名称用于显示
 	public static string[] fighterCharacterNames = {"孙悟空","冰原魔人","地狱恶魔","恶灵骑士","归海一刀","寒冰射手"};//获取头像名称用于显示

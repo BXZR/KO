@@ -50,8 +50,11 @@ public class asheBasicAttack : effectBasic {
 		    Vector3 positionNew = thePlayer.transform.position + new Vector3 (0,0.8f*thePlayer .transform .localScale .y , forward .normalized.z*0.1f) ;
 		    theArrow.transform.localScale *= thePlayer.transform.localScale.y;
 			theArrow.transform.position = positionNew  ;
-
-		    Vector3 emyPosition = systemValues.getEMY (this.thePlayer.transform).transform.position;
+		   
+		    GameObject theEMY = systemValues.getEMY (this.thePlayer.transform);
+		    if(theEMY !=null)
+			{
+			Vector3 emyPosition = theEMY .transform.position;
 		    Vector3 theMoveForward = (emyPosition - this.thePlayer.transform.position).normalized;   
 		    theArrow.transform.LookAt (emyPosition+new Vector3 (0,1,0) );
 		     //艾希的箭矢有一个扇形的射击范围，超过这个范围箭矢就不会射中的
@@ -62,7 +65,11 @@ public class asheBasicAttack : effectBasic {
 		    //print ("move forward for arrow " + theMoveForward);
 		    
 		    theArrow.transform .forward   = theMoveForward;
-		    
+			}
+			else
+			{
+				theArrow.transform .forward   = thePlayer .transform .forward;
+			}
 			Destroy (theArrow, arrowLife);
 			Destroy (this.GetComponent (this.GetType ()), lastingTime);
 

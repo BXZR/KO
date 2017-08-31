@@ -19,7 +19,7 @@ public class effectForDamageUp : effectBasic {
 	public override void Init ()
 	{
 		theEffectName = "斗气爆发";
-		theEffectInformation ="消耗8%生命立刻获得25%最大斗气值\n增加"+damageUp+"攻击力,持续时间内无视15%护甲\n并且斗气消耗减少10%,持续"+lastingTime+"秒\n再次激活可增加2秒持续时间";
+		theEffectInformation ="消耗8%生命立刻获得25%最大斗气值\n增加"+damageUp+"攻击力,持续时间内无视15%护甲\n并且斗气消耗减少10%,持续"+lastingTime+"秒\n再次激活增加2秒时间且消耗减半";
 		makeStart ();
 		this.thePlayer.ActerWuliDamage += damageUp;
 		this.thePlayer.CActerWuliDamage += damageUp;

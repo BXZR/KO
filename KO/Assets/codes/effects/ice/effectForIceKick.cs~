@@ -26,7 +26,7 @@ public class effectForIceKick :  effectBasic {
 	public override void Init ()
 	{
 		theEffectName = "碎裂之腿";
-		theEffectInformation ="击退目标"+kickTimer+"秒，并削减其"+damagePercent+"%攻击力\n持续时间内储存目标受到的伤害\n效果结束时造成总储存量"+damageSavePercentMake*100+"%真实伤害\n最多持续"+this.lastingTime+"秒，攻击命中减少1秒时间";
+		theEffectInformation ="击退目标"+kickTimer+"秒，并削减其"+damagePercent*100+"%攻击力\n持续时间内储存目标受到的伤害\n效果结束时造成总储存量"+damageSavePercentMake*100+"%真实伤害\n最多持续"+this.lastingTime+"秒，攻击命中减少1秒时间";
 		makeStart ();
 		damageMinus =thePlayer.ActerWuliDamage * damagePercent;
 		thePlayer.ActerWuliDamage -= damageMinus;

@@ -11,7 +11,7 @@ public class effectGuiPaiqigong : effectBasic {
 	private AudioSource theSource;//声音音源引用保存
 	GameObject theShield;//释放龟派气功的时候有20%伤害减免的护盾
 	float theSpeed = 20f;//冲击波的移动速度
-	float theDamageMinusPercent = 0.40f;
+	float theDamageMinusPercent = 0.45f;
 
 	void Start () 
 	{

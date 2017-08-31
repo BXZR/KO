@@ -40,7 +40,7 @@ public class effectHuanGui :   effectBasic {
 		theEffectInformation ="在"+timerForLive+"秒内的三次攻击命中触发不同特效：\n";
 		theEffectInformation += "第一次，削减目标"+aimDamageMinus*100+"%攻击力，最多"+timerForLive+"秒\n";
 		theEffectInformation += "第二次，恢复"+acterhpUp+"生命值,获得"+actershieldHp+"护盾\n";
-		theEffectInformation += "第三次，造成目标"+damagePercent*100+"%已损生命的真实伤害";
+		theEffectInformation += "第三次，造成目标"+damagePercent*100+"%已损生命真实伤害";
 		makeStart ();
 		Destroy (this.GetComponent (this.GetType()),timerForLive);
 

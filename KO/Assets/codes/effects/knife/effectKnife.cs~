@@ -7,7 +7,7 @@ public class effectKnife :  effectBasic {
 	//刀哥的被动
 
 	public int count =0;//计数器
-	int countMax = 6;//计数器的上限
+	int countMax = 5;//计数器的上限
 
 	float  baojiPercent = 0.10f;//暴击几率增加
 	float baojiDamageAdd = 0.10f;//暴击伤害增加
@@ -34,7 +34,7 @@ public class effectKnife :  effectBasic {
 	public override void Init ()
 	{
 		theEffectName = "霸刀";
-		theEffectInformation ="享有额外"+baojiPercent*100+"%的暴击率和"+baojiDamageAdd*100+"%暴击伤害\n任何攻击命中可叠加刀气，最多"+countMax+"层\n满层后"+missCountAll +"秒内的下一击造成两次伤害\n(每一次独立计算暴击和附加效果)";
+		theEffectInformation ="享有额外"+baojiPercent*100+"%的暴击率和"+baojiDamageAdd*100+"%暴击伤害\n任何攻击命中可叠加刀气，最多"+(countMax-1)+"层\n满层后"+missCountAll +"秒内的下一击造成两次伤害\n(每一次独立计算暴击和附加效果)";
 		makeStart ();
 		thePlayer.ActerSuperBaldePercent += baojiPercent;
 		thePlayer.CActerSuperBaldePercent += baojiPercent;

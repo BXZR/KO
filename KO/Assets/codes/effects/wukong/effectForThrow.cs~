@@ -121,6 +121,7 @@ public class effectForThrow : effectBasic {
 		theMoveController.canMove = true;//强制移动阶段无法自主移动
 		theAttackLinkController.canControll = true;//也没有办法进行任何动作
 		this.thePlayer.GetComponent <move>().canLook = true;
+		this.transform.position = new Vector3 (this.transform .position .x ,0.15f,this.transform .position .z);
 		theMoveController.moveAction (0.01f,0.1f); 
 	}
 	void OnDestroy()

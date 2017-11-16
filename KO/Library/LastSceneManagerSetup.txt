@@ -1,4 +1,4 @@
 sceneSetups:
-- path: Assets/scenes/selectForStart.unity
+- path: Assets/scenes/Start.unity
   isLoaded: 1
   isActive: 1

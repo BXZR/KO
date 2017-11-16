@@ -1,0 +1,16 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class lightQAControll : MonoBehaviour {
+
+	//这个脚本在初始化的时候调用一次
+	//并非强制
+	//主要功能就是判断平台并且关掉光照阴影等等
+	void Start () 
+	{
+		
+	}
+	
+	 
+}

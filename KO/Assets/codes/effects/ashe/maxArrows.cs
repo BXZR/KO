@@ -119,8 +119,8 @@ public class maxArrows :  effectBasic {
 		{
 			theArrow = (GameObject)GameObject.Instantiate (Arrow);
 			theArrow.GetComponent <extraWeapon> ().setPlayer (this.thePlayer);
-
-			Vector3 positionNew = thePlayer.transform.position + new Vector3 (0,0.8f*thePlayer .transform .localScale .y , forward .normalized.z*0.1f) ;
+			//theArrow.GetComponentInChildren<MeshRenderer> ().material.color = Color.magenta;
+			Vector3 positionNew = thePlayer.transform.position + new Vector3 (0,0.8f*thePlayer .transform .localScale .y + UnityEngine.Random.Range(0,0.4f)-0.2f , forward .normalized.z*0.1f) ;
 			theArrow.transform.localScale *= thePlayer.transform.localScale.y;
 			theArrow.transform.position = positionNew;
 			 

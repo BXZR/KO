@@ -61,7 +61,7 @@ public class effectForIceKick :  effectBasic {
 	{
 		
 		float damage =  damageSave * damageSavePercentMake;
-		print ("kick -- "+ damageSave * damageSavePercentMake);
+		//print ("kick -- "+ damageSave * damageSavePercentMake);
 		thePlayer.ActerHp -= damage;
 
 		effectDestory ();

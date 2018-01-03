@@ -35,7 +35,7 @@ public class systemValues : MonoBehaviour {
 
 	//增加新人物的时候增加这里面的项目就可以了
 	//这些数组的内容是纵向对应的并且与Resources文件夹中资源内容相对应 
-	public static string[] thePlayerNamesForPlay = { "theFighterknife","theFighterIce"     };
+	public static string[] thePlayerNamesForPlay = { "theFighterdemon","theFighterIce"     };
 	private static string [] fighterInResourceNames = {"theFighterWukong","theFighterIce","theFighterdemon","theFighterknight","theFighterknife","theFighterAshe"};
 	public static string[] fighterPicInResourceNames = {"wukong","iceMonster","DEMON","knightHead","knifeHead","asheHead"};//获取头像名称用于显示
 	public static string[] fighterCharacterNames = {"孙悟空","冰原魔人","地狱恶魔","恶灵骑士","归海一刀","寒冰射手"};//获取头像名称用于显示
@@ -108,8 +108,8 @@ public class systemValues : MonoBehaviour {
 	public static float AIThinkTimer = 0.2f;//AI思考状态转换的时候的时间间隔
 	//public static float attackDistance = 0.7f;//AI的攻击范围，关系到状态转换
 	//这个参数暂时废弃，由每一个playerBasic控制
-	public static float theAIActionThinkTime = 0.6f;//AIn角色发起的操作之间的时间间隔，这个值越小AI越凶狠（但是数值太小就会发生颤动，这个还需要调整一下）
-
+	public static float theAIActionThinkTime = 0.70f;//AIn角色发起的操作之间的时间间隔，这个值越小AI越凶狠（但是数值太小就会发生颤动，这个还需要调整一下）
+	public static float theAIActionThinkTimeForSkill= 1.20f;//AI角色使用技能的时候没有必要思考
 	/********************************************BGM***************************************************/
 	public static string theBGMName = "fightBGM";//播放的BGM的名称，这个可以根据任务不同、条件不同有所改变
 

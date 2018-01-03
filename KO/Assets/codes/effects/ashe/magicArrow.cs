@@ -97,7 +97,7 @@ public class magicArrow :  effectBasic {
 			}
 			catch
 			{
-				print ("箭矢销毁失败");
+				//print ("箭矢销毁失败");
 			}
 		}
 	}

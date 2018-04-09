@@ -12,8 +12,10 @@ public class maxArrows :  effectBasic {
 	Vector3 forward;
 	float arrowLife = 0.3f;// 弹矢生存时间
 	float lastingTime =10f;//根据规则产生的脚本覆盖时间间隔，这个时间越短，但是发射频率越高，也就是攻速越快
-	float maxCount =3;//最多弹矢数量
+	float maxCount =5;//最多弹矢数量
+	float damagePercent = 0.9f;//每一支箭矢的攻击力百分比
 	GameObject theArrow;//真正的弹矢
+
 
 	float damageTruePercent = 0.3f;//转化的真实伤害百分比
 
@@ -46,7 +48,7 @@ public class maxArrows :  effectBasic {
 		if (makeDamageCount < maxCount)
 		{
 			makeDamageCount++;
-			aim.ActerHp += TrueDamage * damageTruePercent;
+			aim.ActerHp += TrueDamage * (damageTruePercent + (1-damagePercent));
 			aim.ActerHp -= this.thePlayer.ActerWuliDamage * damageTruePercent;
 		}
 	}
@@ -55,7 +57,7 @@ public class maxArrows :  effectBasic {
 	public override void Init ()
 	{
 		theEffectName = "万箭齐发";
-		theEffectInformation ="连续发射"+maxCount+"支特殊的箭矢\n其攻击力的"+damageTruePercent*100+"%转化为真实伤害\n此技能"+lastingTime+"秒内仅可以使用一次\n冷却中使用将转化为普通射击";
+		theEffectInformation ="连续发射"+maxCount+"支具有"+damagePercent*100+"%攻击力的箭矢\n其攻击力的"+damageTruePercent*100+"%转化为真实伤害\n此技能"+lastingTime+"秒内仅可以使用一次\n冷却中使用将转化为普通射击";
 		makeStart ();
 		forward = this.thePlayer.transform.forward;
 		Arrow = (GameObject)  Resources.Load ("effects/aShe_Arrow");
@@ -120,7 +122,9 @@ public class maxArrows :  effectBasic {
 			theArrow = (GameObject)GameObject.Instantiate (Arrow);
 			theArrow.GetComponent <extraWeapon> ().setPlayer (this.thePlayer);
 			//theArrow.GetComponentInChildren<MeshRenderer> ().material.color = Color.magenta;
-			Vector3 positionNew = thePlayer.transform.position + new Vector3 (0,0.8f*thePlayer .transform .localScale .y + UnityEngine.Random.Range(0,0.4f)-0.2f , forward .normalized.z*0.1f) ;
+			Vector3 positionNew = thePlayer.transform.position + new Vector3 (0,0.8f*thePlayer .transform .localScale .y , forward .normalized.z*0.1f) ;
+			positionNew += getPositionExtra (i);
+
 			theArrow.transform.localScale *= thePlayer.transform.localScale.y;
 			theArrow.transform.position = positionNew;
 			 
@@ -145,9 +149,22 @@ public class maxArrows :  effectBasic {
 			theArrow.name = "maxArrow";
 			Destroy (theArrow, arrowLife);
 			Destroy (this.GetComponent (this.GetType ()), lastingTime);
-			yield return new WaitForSeconds (0.1f);
+			yield return new WaitForSeconds (0.05f);
 		}
 		StopAllCoroutines ();
+	}
+
+	private int abs = -1;
+	Vector3 getPositionExtra(int i)
+	{
+		if (i == 0)
+			return Vector3.zero;
+		
+		abs = -abs;
+		if ((i) % 2 == 1)
+			abs *= 2;
+		
+		return new Vector3 (0, 0.07f, 0) * abs;
 	}
 
 }

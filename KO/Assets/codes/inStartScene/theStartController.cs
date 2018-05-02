@@ -51,6 +51,13 @@ public class theStartController : MonoBehaviour {
 		}
 		else
 			startWithoutPlayMovie ();
+
+		#if pc
+		if(theMovieTexture &&theMovieTexture.isPlaying && theMoviePlane)
+		theMovieTexture.Stop ();
+		#endif
+		theMoviePlane.gameObject.SetActive (false);
+		theUIRoot.SetActive (true);//淡入淡出的特效什么的可以在这里加方法
 	}
 
 	public void playMovie()//播放前尘忆梦的方法
@@ -143,14 +150,14 @@ public class theStartController : MonoBehaviour {
 
 	void Update () 
 	{
-		if ( Input.anyKeyDown  ) 
-		{
-			#if pc
-			if(theMovieTexture &&theMovieTexture.isPlaying && theMoviePlane)
-		   theMovieTexture.Stop ();
-			#endif
-		   theMoviePlane.gameObject.SetActive (false);
-		   theUIRoot.SetActive (true);//淡入淡出的特效什么的可以在这里加方法
-		}
+//		if ( Input.anyKeyDown  ) 
+//		{
+//			#if pc
+//			if(theMovieTexture &&theMovieTexture.isPlaying && theMoviePlane)
+//		   theMovieTexture.Stop ();
+//			#endif
+//		   theMoviePlane.gameObject.SetActive (false);
+//		   theUIRoot.SetActive (true);//淡入淡出的特效什么的可以在这里加方法
+//		}
 	}
 }

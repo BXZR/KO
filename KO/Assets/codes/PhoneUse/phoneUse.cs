@@ -75,7 +75,7 @@ public class phoneUse : MonoBehaviour {
 	void Start () 
 	{
 
-		if (Application.platform != RuntimePlatform.Android)
+		if (Application.platform != RuntimePlatform.Android && Application.platform != RuntimePlatform.WebGLPlayer)
 			Destroy (this.gameObject);
 		else 
 		{

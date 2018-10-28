@@ -20,7 +20,7 @@ public class attackSpeedUp :  effectBasic {
 	float hpup = 12.5f;//攻击命中的恢复的生命值
 
 	int doubled = 2;
-	float adderPercent = 0.25f;//增加的百分比
+	float adderPercent = 0.30f;//增加的百分比
 	float adderAbslute = 9f;//增加的真实伤害
 
 	void Start () 

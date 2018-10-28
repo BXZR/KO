@@ -13,7 +13,7 @@ public class maxArrows :  effectBasic {
 	float arrowLife = 0.3f;// 弹矢生存时间
 	float lastingTime =10f;//根据规则产生的脚本覆盖时间间隔，这个时间越短，但是发射频率越高，也就是攻速越快
 	float maxCount =5;//最多弹矢数量
-	float damagePercent = 0.9f;//每一支箭矢的攻击力百分比
+	float damagePercent = 1.10f;//每一支箭矢的攻击力百分比
 	GameObject theArrow;//真正的弹矢
 
 
